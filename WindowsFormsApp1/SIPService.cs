@@ -26,6 +26,7 @@ namespace sipservice
 {
     public class SIPService
     {
+        private MainForm form;
         private const string OzekiLicenseKey = "UDoyMDMzLTEyLTI1LFVQOjIwMzMtMDEtMDEsTUNDOjUwMCxNUEw6NTAwLE1TTEM6NTAwLE1GQzo1MDAsRzcyOTp0cnVlLE1XUEM6NTAwLE1JUEM6NTAwfHFQZDBhQnhlaEFGaTlNMmV4cXZxaHUyVE5rMWh2S0FzaUZlVlowbFFseTZWZ3JKbmFMTXh3ZVV2elBGcEliTFpwNHZtZDArZlZwc2VkRGpjQWdKR3ZnPT0=";
         private const string OzekiLicenseUserName = "OZSDK-CALL-1234567-IWAREZ 2017";
         private static ISoftPhone softphone;
@@ -36,17 +37,16 @@ namespace sipservice
         static Speaker speaker;
         static MediaConnector connector;
         static PhoneCallAudioReceiver mediaReceiver;
-
-        private MainForm form;
-        private System.Timers.Timer callTimer;
         private int callDurationSeconds;
         static ConferenceRoom _conferenceRoom;
         static Microphone microphone;
         static PhoneCallAudioSender mediaSender;
-        int MinPort = 20001;
-        int MaxPort = 20500;
+        public int MinPort = 20001;
+        public int MaxPort = 20500;
         private string bearerToken;
         CallerResponse CallerInfo;
+        private System.Timers.Timer callTimer;
+
 
 
         public SIPService(MainForm form)
@@ -133,8 +133,8 @@ namespace sipservice
 
             var credentials = new
             {
-                un = form.BarcaUsername.Text,
-                pwd = form.BarcaPass.Text,
+                un = form.BarsaUser,
+                pwd = form.BarcaPass,
             };
             var jsonBody = JsonConvert.SerializeObject(credentials);
             var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
@@ -272,11 +272,11 @@ namespace sipservice
 
             form.UpdateIncomingNumber(CallerID);
 
-            if (CallerID != form.couplePhone.Text)
+            if (form.IsTransferEnabled && form.CouplePhone != CallerID)
             {
                 call1.Answer();
-                StartOutgoingCalls(form.couplePhone.Text);
-                Log($"making call to .. " + form.couplePhone.Text);
+                StartOutgoingCalls(form.CouplePhone);
+                Log($"Transfer call to .. " + form.CouplePhone);
             }
         }
         public void StartOutgoingCalls(string targetNumber)
@@ -345,11 +345,13 @@ namespace sipservice
             Console.WriteLine("Call state: {0}.", e.State);
             Log($"Call state: {e.State}.");
             //var a =sender.GetType;
-
+            
+            IPhoneCall CurrentCall = (IPhoneCall)sender;
             if (e.State == CallState.Answered)
             {
                 _conferenceRoom.AddToConference(call1);
-                SetupDevices();
+                if(!form.IsTransferEnabled || !CurrentCall.IsIncoming)
+                    SetupDevices();
                 StartCallTimer();
                 _conferenceRoom.CallConnected += ConfrenceConected;
                 _conferenceRoom.CallDisconnected += ConfrenceDisconected;
@@ -377,23 +379,27 @@ namespace sipservice
         }
         private void SetupDevices()
         {
-            //_conferenceRoom.ConnectReceiver(speaker);
-            //_conferenceRoom.ConnectSender(microphone);
-
-            connector.Connect(microphone, mediaSender);
-            connector.Connect(mediaReceiver, speaker);
-
-            mediaSender.AttachToCall(call1);
-            mediaReceiver.AttachToCall(call1);
             try
             {
+                //_conferenceRoom.ConnectReceiver(speaker);
+                //_conferenceRoom.ConnectSender(microphone);
+
+                connector.Connect(microphone, mediaSender);
+                connector.Connect(mediaReceiver, speaker);
+
+                mediaSender.AttachToCall(call1);
+                mediaReceiver.AttachToCall(call1);
+
                 if (!(microphone == null || speaker == null))
                 {
                     speaker.Start();
                     microphone.Start();
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Setup Device Not Completed" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
         }
         private void Log(string message)
@@ -462,7 +468,7 @@ namespace sipservice
                         //MessageBox.Show("Third API Response: " + result, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                         var completedTask = await
-                                Task.Run(() => SynchronizationManager.Instance.WaitForFormShown(5000));
+                                Task.Run(() => SynchronizationManager.Instance.WaitForFormShown(500));
 
                         if (completedTask == true)
                         {
@@ -476,7 +482,7 @@ namespace sipservice
                             string urlToOpen = "http://localhost:4172/api/openid/callback?provider=AgentLogin&LoginCode=" + LoginCode;
                             System.Diagnostics.Process.Start(urlToOpen);
 
-                            await Task.Delay(10000);
+                            await Task.Delay(2000);
 
                             // Make another HTTP request
                             response = await client.PostAsync(apiUrl, null);

@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.btnRegister = new System.Windows.Forms.Button();
             this.txtUsername = new System.Windows.Forms.TextBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.btnCall = new System.Windows.Forms.Button();
@@ -64,17 +63,6 @@
             this.button12 = new System.Windows.Forms.Button();
             this.button13 = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
-            // btnRegister
-            // 
-            this.btnRegister.Location = new System.Drawing.Point(300, 396);
-            this.btnRegister.Name = "btnRegister";
-            this.btnRegister.Size = new System.Drawing.Size(75, 23);
-            this.btnRegister.TabIndex = 0;
-            this.btnRegister.Text = "REGISTER";
-            this.btnRegister.UseVisualStyleBackColor = true;
-            this.btnRegister.Visible = false;
-            this.btnRegister.Click += new System.EventHandler(this.RegisterAccount);
             // 
             // txtUsername
             // 
@@ -437,7 +425,6 @@
             this.Controls.Add(this.txtLog);
             this.Controls.Add(this.txtCallNumber);
             this.Controls.Add(this.txtUsername);
-            this.Controls.Add(this.btnRegister);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "SIPAgent";
@@ -448,8 +435,6 @@
         }
 
         #endregion
-
-        public System.Windows.Forms.Button btnRegister;
         public System.Windows.Forms.TextBox txtUsername;
         public System.Windows.Forms.TextBox txtPassword;
         public System.Windows.Forms.Button btnCall;

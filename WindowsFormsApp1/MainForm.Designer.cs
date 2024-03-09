@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.btnRegister = new System.Windows.Forms.Button();
             this.txtUsername = new System.Windows.Forms.TextBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
@@ -396,7 +397,7 @@
             this.button13.Text = "0";
             this.button13.UseVisualStyleBackColor = true;
             // 
-            // Form1
+            // MainForm
             // 
             this.AccessibleDescription = "DFG";
             this.AccessibleName = "DFGD";
@@ -437,8 +438,9 @@
             this.Controls.Add(this.txtCallNumber);
             this.Controls.Add(this.txtUsername);
             this.Controls.Add(this.btnRegister);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "MainForm";
+            this.Text = "SIPAgent";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

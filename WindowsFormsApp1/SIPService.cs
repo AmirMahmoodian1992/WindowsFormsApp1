@@ -26,15 +26,8 @@ namespace sipservice
 {
     public class SIPService
     {
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool SetForegroundWindow(IntPtr hWnd);
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-        const int SW_RESTORE = 9;
-
+        private const string OzekiLicenseKey = "UDoyMDMzLTEyLTI1LFVQOjIwMzMtMDEtMDEsTUNDOjUwMCxNUEw6NTAwLE1TTEM6NTAwLE1GQzo1MDAsRzcyOTp0cnVlLE1XUEM6NTAwLE1JUEM6NTAwfHFQZDBhQnhlaEFGaTlNMmV4cXZxaHUyVE5rMWh2S0FzaUZlVlowbFFseTZWZ3JKbmFMTXh3ZVV2elBGcEliTFpwNHZtZDArZlZwc2VkRGpjQWdKR3ZnPT0=";
+        private const string OzekiLicenseUserName = "OZSDK-CALL-1234567-IWAREZ 2017";
         private static ISoftPhone softphone;
         private IPhoneLine phoneLine;
         private IPhoneCall call1;
@@ -61,13 +54,14 @@ namespace sipservice
             try
             {
                 this.form = form;
-                var userName = "OZSDK-CALL-1234567-IWAREZ 2017";
-                var key =
-                    "" +
-                    "UDoyMDMzLTEyLTI1LFVQOjIwMzMtMDEtMDEsTUNDOjUwMCxNUEw6NTAwLE1TTEM6NTAwLE1GQzo1MDAsRzcyOTp0cnVlLE1XUEM6NTAwLE1JUEM6NTAwfHFQZDBhQnhlaEFGaTlNMmV4cXZxaHUyVE5rMWh2S0FzaUZlVlowbFFseTZWZ3JKbmFMTXh3ZVV2elBGcEliTFpwNHZtZDArZlZwc2VkRGpjQWdKR3ZnPT0=";
+                string userName = OzekiLicenseUserName;
+                string key = OzekiLicenseKey;
                 Ozeki.Common.LicenseManager.Instance.SetLicense(userName, key);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         static int port = 10000;
         private bool flage;
@@ -90,14 +84,6 @@ namespace sipservice
 
                 phoneLine = softphone.CreatePhoneLine(account);
                 phoneLine.RegistrationStateChanged += line_RegStateChanged;
-
-                //var ExpirationTime = phoneLine.Config.ExpirationTime;
-                //var ExplicitIdentity = phoneLine.Config.ExplicitIdentity;
-                //var KeepAliveMode = phoneLine.Config.KeepAliveMode;
-                //var KeepAliveInterval = phoneLine.Config.KeepAliveInterval;
-                //var RegisterBeforeExpires = phoneLine.Config.RegisterBeforeExpires;
-
-                //phoneLine.Config.KeepAliveMode = KeepAliveMode.NONE;
                 phoneLine.Config.KeepAliveInterval = 10;
 
                 if (softphone != null)
@@ -128,13 +114,11 @@ namespace sipservice
 
             if (e.State == RegState.NotRegistered || e.State == RegState.Error)
             {
-                Console.WriteLine("Registration failed!");
                 Log($"Registration failed!, Reg State:{e.State}");
             }
 
             if (e.State == RegState.RegistrationSucceeded)
             {
-                Console.WriteLine("Registration succeeded - Online!");
                 Log($"Registration succeeded - Online!");
                 if (form.InvokeRequired)
                 {
@@ -173,7 +157,7 @@ namespace sipservice
                             string cleanBearerToken = loginResponseData.data.token.StartsWith("bearer ", StringComparison.OrdinalIgnoreCase)
                                 ? loginResponseData.data.token.Substring(7)
                                 : loginResponseData.data.token;
-                            //should remoe this for tird api ??
+                            //TODO: should remoe this for tird api ??
                             bearerToken = cleanBearerToken;
 
                             return cleanBearerToken;
@@ -190,14 +174,14 @@ namespace sipservice
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    HandleException("Exception during API call: " + ex.Message);
                 }
                 return string.Empty;
             }
         }
 
 
-        private async Task<CallerResponse> CallSecondApi(string Token, string CallerID)
+        private async Task<CallerResponse> CallGetCallerInfoApi(string Token, string CallerID)
         {
             string apiUrl = "http://localhost:4172/api2/incomingCall/0.1/GetCallerInfo?CallerID=" + CallerID;
 
@@ -212,25 +196,23 @@ namespace sipservice
                     if (response.IsSuccessStatusCode)
                     {
                         string responseBody = await response.Content.ReadAsStringAsync();
-                        MessageBox.Show("API Response: " + responseBody, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        //MessageBox.Show("API Response: " + responseBody, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         var callerResponse = JsonConvert.DeserializeObject<CallerResponse>(responseBody);
-
                         if (callerResponse?.CallerMO != null)
                         {
-                            MessageBox.Show($"Caller Info: {string.Join(", ", callerResponse.CallerMO)}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+                            // MessageBox.Show($"Caller Info: {string.Join(", ", callerResponse.CallerMO)}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return callerResponse;
                         }
 
                     }
                     else
                     {
-                        MessageBox.Show("Second API Error: " + response.StatusCode, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        HandleApiError("CallGetCallerInfoApi Error: " + response.StatusCode);
                     }
                 }
                 catch (Exception ex)
                 {
-                    HandleException("Exception during API call: " + ex.Message);
+                    HandleException("Exception during CallGetCallerInfoApi API call: " + ex.Message);
                 }
             }
             return new CallerResponse();
@@ -250,14 +232,14 @@ namespace sipservice
                     if (response.IsSuccessStatusCode)
                     {
                         string responseBody = await response.Content.ReadAsStringAsync();
-                        MessageBox.Show("API Response: " + responseBody, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        //MessageBox.Show("API Response: " + responseBody, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         JObject jsonResponse = JObject.Parse(responseBody);
                         string loginCode = jsonResponse["LoginCode"].ToString();
                         return loginCode;
                     }
                     else
                     {
-                        MessageBox.Show("CallGetLoginCodeApi API Error: " + response.StatusCode, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        HandleException("Exception during API call: " + response.StatusCode);
                     }
                 }
                 catch (Exception ex)
@@ -283,7 +265,7 @@ namespace sipservice
             string BarcaToken = await CallTokenAPI();
             if (!string.IsNullOrEmpty(BarcaToken))
             {
-                CallerInfo = await CallSecondApi(BarcaToken, CallerID);
+                CallerInfo = await CallGetCallerInfoApi(BarcaToken, CallerID);
             }
             incomingCallForm = new IncomingCallForm(CallerInfo, this);
             incomingCallForm.Show();
@@ -374,11 +356,7 @@ namespace sipservice
             }
             if (e.State == CallState.InCall)
             {
-                //_conferenceRoom.AddToConference(call1);
-                //SetupDevices();
-                //StartCallTimer();
-                //_conferenceRoom.CallConnected += ConfrenceConected;
-                //_conferenceRoom.CallDisconnected += ConfrenceDisconected;
+
             }
             if (e.State.IsCallEnded())
             {
@@ -519,49 +497,6 @@ namespace sipservice
                                 return false;
                             }
                         }
-
-                        //bool formShown = SynchronizationManager.Instance.WaitForFormShown(1000);
-                        //if (formShown)
-                        //{
-                        //    return formShown;
-                        //}
-                        //else
-                        //    return false;
-
-
-                        //string browserProcessName = "chrome";
-
-                        //Process[] processes = Process.GetProcessesByName(browserProcessName);
-
-                        //if (processes.Length > 0)
-                        //{
-                        //    Bring the first instance of the browser to the front
-
-                        //    foreach (Process p in processes)
-                        //    {
-                        //        if (p.MainWindowHandle != IntPtr.Zero)
-                        //        {
-                        //            ShowWindow(p.MainWindowHandle, SW_RESTORE);
-
-                        //            SetForegroundWindow(p.MainWindowHandle);
-                        //        }
-                        //    }
-
-                        //    IntPtr mainWindowHandle = processes[0].MainWindowHandle;
-
-                        //    if (mainWindowHandle != IntPtr.Zero)
-                        //    {
-                        //        SetForegroundWindow(mainWindowHandle);
-                        //    }
-                        //    else
-                        //    {
-                        //        Console.WriteLine("Unable to retrieve the browser window handle.");
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    Console.WriteLine("Browser process not found.");
-                        //}
                     }
                     else
                     {
@@ -589,13 +524,11 @@ namespace sipservice
         }
         private void HandleApiError(string errorMessage)
         {
-            // Log the error or display an appropriate message to the user
             MessageBox.Show(errorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void HandleException(string errorMessage)
         {
-            // Log the exception or display an appropriate message to the user
             MessageBox.Show(errorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }

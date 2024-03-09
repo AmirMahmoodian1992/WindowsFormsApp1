@@ -58,5 +58,65 @@ namespace SIPWindowsAgent.Properties {
                 this["CouplePhone"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string BarcaPass {
+            get {
+                return ((string)(this["BarcaPass"]));
+            }
+            set {
+                this["BarcaPass"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string BarcaUsername {
+            get {
+                return ((string)(this["BarcaUsername"]));
+            }
+            set {
+                this["BarcaUsername"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("false")]
+        public bool TransferphoneCheckBox {
+            get {
+                return ((bool)(this["TransferphoneCheckBox"]));
+            }
+            set {
+                this["TransferphoneCheckBox"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SIPServerAddressTextBox {
+            get {
+                return ((string)(this["SIPServerAddressTextBox"]));
+            }
+            set {
+                this["SIPServerAddressTextBox"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int SIPServerPortTextBox {
+            get {
+                return ((int)(this["SIPServerPortTextBox"]));
+            }
+            set {
+                this["SIPServerPortTextBox"] = value;
+            }
+        }
     }
 }

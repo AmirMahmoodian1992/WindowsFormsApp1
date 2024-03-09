@@ -6,6 +6,7 @@ using Ozeki.VoIP;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using sipservice;
 using Nancy.Hosting.Self;
+using utils;
 
 namespace SIPWindowsAgent
 {
@@ -23,6 +24,13 @@ namespace SIPWindowsAgent
 
 
         private static int instanceCount = 0;
+        public bool TransferPhoneActive;
+
+        public string CouplePhone;
+        public string BarsaUser;
+        public string BarsaPass;
+        public bool IsTransferEnabled;
+
         public MainForm()
         {
             InitializeComponent();
@@ -33,6 +41,8 @@ namespace SIPWindowsAgent
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            InitializeSettingParameters();
+            RegisterAccount();
             if (!nancyStarted)
             {
                 StartNancyApi();
@@ -41,6 +51,16 @@ namespace SIPWindowsAgent
 
             }
         }
+
+        private void InitializeSettingParameters()
+        {
+            Properties.Settings.Default.Reload();
+            CouplePhone = Properties.Settings.Default.CouplePhone;
+            IsTransferEnabled = Properties.Settings.Default.TransferphoneCheckBox;
+            BarsaUser = Properties.Settings.Default.BarcaUsername;
+            BarsaPass = Properties.Settings.Default.BarcaPass;
+        }
+
         private void StartNancyApi()
         {
             var port = 5656;
@@ -51,16 +71,20 @@ namespace SIPWindowsAgent
             //MessageBox.Show($"Nancy is listening on: {uri}");
         }
 
-        private void RegisterAccount(object sender, EventArgs e)
+        private void RegisterAccount()
         {
-            var userName = txtUsername.Text;
-            var displayName = txtUsername.Text;
-            var authenticationId = txtUsername.Text;
-            var registerPassword = txtPassword.Text;
-            var domainHost = "192.168.0.101";
-            var domainPort = 5080;
-            
-            sipService.RegisterAccount(userName, displayName, authenticationId, registerPassword, domainHost, domainPort);
+            var userName = Properties.Settings.Default.Username;
+            var displayName = Properties.Settings.Default.Username;
+            var authenticationId = Properties.Settings.Default.Username;
+            var registerPassword = Properties.Settings.Default.Password;
+            var domainHost = Properties.Settings.Default.SIPServerAddressTextBox;
+            var domainPort = Properties.Settings.Default.SIPServerPortTextBox;
+            if (userName != "" && registerPassword != "" && domainHost != "" && domainPort != 0)
+            {
+                UpdateLog("Registering ... ");
+                sipService.RegisterAccount(userName, displayName, authenticationId, registerPassword, domainHost, domainPort);
+            }
+
         }
 
         public void CreatCallFromApi(string Number)
@@ -85,7 +109,7 @@ namespace SIPWindowsAgent
         {
             sipService.DropCall();
         }
-       
+
         private void AnswerCall(object sender, EventArgs e)
         {
             sipService.AnswerCall();

@@ -47,7 +47,8 @@ namespace WindowsFormsApp1
             var uri = new Uri($"http://localhost:{port}");
             _nancyHost = new NancyHost(uri);
             _nancyHost.Start();
-            MessageBox.Show($"Nancy is listening on: {uri}");
+            // TODO: Handle Error
+            //MessageBox.Show($"Nancy is listening on: {uri}");
         }
 
         private void RegisterAccount(object sender, EventArgs e)

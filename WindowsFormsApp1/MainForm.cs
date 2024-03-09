@@ -7,7 +7,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using sipservice;
 using Nancy.Hosting.Self;
 
-namespace WindowsFormsApp1
+namespace SIPWindowsAgent
 {
     public partial class MainForm : Form
     {

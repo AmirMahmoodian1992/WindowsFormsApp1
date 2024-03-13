@@ -19,6 +19,8 @@ using System.Net;
 using System.Linq;
 using System.Net.Sockets;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Nancy;
+using Nancy.Helpers;
 
 
 
@@ -33,7 +35,7 @@ namespace sipservice
         private IPhoneLine phoneLine;
         private IPhoneCall call1;
         private IPhoneCall call2;
-
+        IPhoneCall ActualCall;
         static Speaker speaker;
         static MediaConnector connector;
         static PhoneCallAudioReceiver mediaReceiver;
@@ -44,8 +46,9 @@ namespace sipservice
         public int MinPort = 20001;
         public int MaxPort = 20500;
         private string bearerToken;
-        CallerResponse CallerInfo;
+        CallerData CallerInfo;
         private System.Timers.Timer callTimer;
+
 
 
 
@@ -54,9 +57,7 @@ namespace sipservice
             try
             {
                 this.form = form;
-                string userName = OzekiLicenseUserName;
-                string key = OzekiLicenseKey;
-                Ozeki.Common.LicenseManager.Instance.SetLicense(userName, key);
+                Ozeki.Common.LicenseManager.Instance.SetLicense(OzekiLicenseUserName, OzekiLicenseKey);
             }
             catch (Exception ex)
             {
@@ -66,6 +67,9 @@ namespace sipservice
         static int port = 10000;
         private bool flage;
         private IncomingCallForm incomingCallForm;
+        private OutGoingCallForm OutGoingCall;
+        private int NumberOfTries;
+        private int NumberOfTries2;
 
         public void RegisterAccount(string userName, string displayName, string authenticationId, string registerPassword, string domainHost, int domainPort)
         {
@@ -99,7 +103,7 @@ namespace sipservice
             catch (Exception ex)
             {
                 Console.WriteLine("Error during SIP registration: " + ex.Message);
-                Log("Error during SIP registration: " + ex.Message);
+                Log("Error during SIP registration: " + ex.Message, "MainForm");
             }
 
         }
@@ -114,12 +118,12 @@ namespace sipservice
 
             if (e.State == RegState.NotRegistered || e.State == RegState.Error)
             {
-                Log($"Registration failed!, Reg State:{e.State}");
+                Log($"Registration failed!, Reg State:{e.State}", "MainForm");
             }
 
             if (e.State == RegState.RegistrationSucceeded)
             {
-                Log($"Registration succeeded - Online!");
+                Log($"Registration succeeded - Online!", "MainForm");
                 if (form.InvokeRequired)
                 {
                     form.Invoke(new Action(() => form.RegisterRadioButton.Checked = true));
@@ -127,14 +131,14 @@ namespace sipservice
                 form.RegisterRadioButton.Checked = true;
             }
         }
-        private async Task<string> CallTokenAPI()
+        internal async Task<string> CallTokenAPI()
         {
-            string loginApiUrl = "http://localhost:4172/api/auth/serviceLogin3";
+            string loginApiUrl = "http://" + form.BarsaAddress + "/api/auth/serviceLogin3";
 
             var credentials = new
             {
                 un = form.BarsaUser,
-                pwd = form.BarcaPass,
+                pwd = form.BarsaPass,
             };
             var jsonBody = JsonConvert.SerializeObject(credentials);
             var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
@@ -181,9 +185,9 @@ namespace sipservice
         }
 
 
-        private async Task<CallerResponse> CallGetCallerInfoApi(string Token, string CallerID)
+        internal async Task<CallerData> CallGetCallerInfoApi(string Token, string CallerID)
         {
-            string apiUrl = "http://localhost:4172/api2/incomingCall/0.1/GetCallerInfo?CallerID=" + CallerID;
+            string apiUrl = $"http://{form.BarsaAddress}/api2/incomingCall/0.1/GetCallerInfo?CallerID={CallerID}";
 
             using (HttpClient client = new HttpClient())
             {
@@ -197,12 +201,21 @@ namespace sipservice
                     {
                         string responseBody = await response.Content.ReadAsStringAsync();
                         //MessageBox.Show("API Response: " + responseBody, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        var callerResponse = JsonConvert.DeserializeObject<CallerResponse>(responseBody);
-                        if (callerResponse?.CallerMO != null)
-                        {
-                            // MessageBox.Show($"Caller Info: {string.Join(", ", callerResponse.CallerMO)}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return callerResponse;
-                        }
+                        var callerResponse = JsonConvert.DeserializeObject<SIPWindowsAgent.InfoData>(responseBody);
+                        return JsonConvert.DeserializeObject<CallerData>(callerResponse.CallerJson)  ;
+
+                        //if (callerResponse?.CallerMO != null &&
+                        //    callerResponse.CallerMO.SequenceEqual(new[] { "User Not exist!", "" }))
+                        //{
+                        //    // Informative message when user data is not found
+                        //    return new CallerResponse { CallerMO = new[] { "User Not Found", "Unknown", "Unknown", "Unknown" } };
+                        //}
+                        //else if (callerResponse?.CallerMO != null)
+                        //{
+                        //    // Handle other cases when user data is found
+                        //    // MessageBox.Show($"Caller Info: {string.Join(", ", callerResponse.CallerMO)}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        //    return callerResponse;
+                        //}
 
                     }
                     else
@@ -215,11 +228,11 @@ namespace sipservice
                     HandleException("Exception during CallGetCallerInfoApi API call: " + ex.Message);
                 }
             }
-            return new CallerResponse();
+            return null;
         }
         private async Task<string> CallGetLoginCodeApi(string Token, string ClientIP)
         {
-            string apiUrl = "http://localhost:4172/api2/incomingCall/0.1/GetLoginCode?Token=" + Token + "&clientIpAddress=" + ClientIP;
+            string apiUrl = $"http://{form.BarsaAddress}/api2/incomingCall/0.1/GetLoginCode?Token={Token}&clientIpAddress={ClientIP}";
 
             using (HttpClient client = new HttpClient())
             {
@@ -256,10 +269,10 @@ namespace sipservice
                 form.BeginInvoke(new Action(() => softphone_IncomingCall(sender, e)));
                 return;
             }
-
             call1 = e.Item;
+            ActualCall = call1;
             string CallerID = ((Ozeki.VoIP.LocalCallWrapper)e.Item).CallerIDAsCaller;
-            Log($"recived call from {CallerID}");
+            Log($"recived call from {CallerID}", "MainForm");
             call1.CallStateChanged += call_CallStateChanged;
 
             string BarcaToken = await CallTokenAPI();
@@ -267,16 +280,13 @@ namespace sipservice
             {
                 CallerInfo = await CallGetCallerInfoApi(BarcaToken, CallerID);
             }
-            incomingCallForm = new IncomingCallForm(CallerInfo, this);
+            incomingCallForm = new IncomingCallForm(CallerID, CallerInfo, this);
             incomingCallForm.Show();
-
-            form.UpdateIncomingNumber(CallerID);
-
             if (form.IsTransferEnabled && form.CouplePhone != CallerID)
             {
                 call1.Answer();
                 StartOutgoingCalls(form.CouplePhone);
-                Log($"Transfer call to .. " + form.CouplePhone);
+                Log($"Transfer call to .. " + form.CouplePhone, "MainForm");
             }
         }
         public void StartOutgoingCalls(string targetNumber)
@@ -284,22 +294,20 @@ namespace sipservice
 
             var numberToDial = targetNumber;
             call2 = softphone.CreateCallObject(phoneLine, numberToDial);
-
+            ActualCall = call2;
             call2.CallStateChanged += OutgoingCallStateChanged;
-
-            Log($"Ringing phone number \"{call1.DialInfo.Dialed}\".");
+            Log($"Ringing phone number {call1.DialInfo.Dialed}", "MainForm");
             call2.Start();
         }
         void OutgoingCallStateChanged(object sender, CallStateChangedArgs e)
         {
             var call = (ICall)sender;
-            Log($"out going Call state: {e.State}.");
+            Log($"out going Call state: {e.State}.", "IncomingCallForm");
             if (e.State == CallState.Answered)
             {
-                incomingCallForm.UpdateLabelText($"Second Device Answered And Added To Confrerence");
+                //incomingCallForm.UpdateLabelText($"Second Device Answered And Added To Confrerence");
                 _conferenceRoom.AddToConference(call2);
-                Log($"{call.DialInfo.Dialed} added to confrance");
-                SetupDevices();
+                Log($"{call.DialInfo.Dialed} added to confrance", "MainForm");
             }
             if (e.State == CallState.LocalHeld)
             {
@@ -314,20 +322,16 @@ namespace sipservice
 
         private void ConfrenceDisconected(object sender, VoIPEventArgs<ICall> e)
         {
-            Log($"confence disconnected from {((Ozeki.VoIP.LocalCallWrapper)e.Item).CallerIDAsCaller}");
-
-            call1.HangUp();
-            call2.HangUp();
-            DisposeCall(call1);
-            DisposeCall(call2);
+            Log($"confence disconnected from {((Ozeki.VoIP.LocalCallWrapper)e.Item).CallerIDAsCaller}", "MainForm");
+            RejectCall();
         }
 
         private void ConfrenceConected(object sender, VoIPEventArgs<ICall> e)
         {
-            Log($"confence connected from {((Ozeki.VoIP.LocalCallWrapper)e.Item).CallerIDAsCaller}");
+            Log($"confence connected from {((Ozeki.VoIP.LocalCallWrapper)e.Item).CallerIDAsCaller}", "MainForm");
         }
 
-        public void CreateCall(string targetNumber)
+        public void CreateCall(string targetNumber,CallerData callerData)
         {
             var dialParams = new DialParameters(targetNumber);
             dialParams.CallType = CallType.Audio;
@@ -335,6 +339,9 @@ namespace sipservice
                 MessageBox.Show($"First Register Your Sip Account", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
             {
+
+                OutGoingCall = new OutGoingCallForm(targetNumber, callerData, this);
+                OutGoingCall.Show();
                 call1 = softphone.CreateCallObject(phoneLine, dialParams);
                 call1.CallStateChanged += call_CallStateChanged;
                 call1.Start();
@@ -343,15 +350,21 @@ namespace sipservice
         private void call_CallStateChanged(object sender, CallStateChangedArgs e)
         {
             Console.WriteLine("Call state: {0}.", e.State);
-            Log($"Call state: {e.State}.");
+            Log($"Call state: {e.State}.", "MainForm");
             //var a =sender.GetType;
-            
+
             IPhoneCall CurrentCall = (IPhoneCall)sender;
             if (e.State == CallState.Answered)
             {
                 _conferenceRoom.AddToConference(call1);
-                if(!form.IsTransferEnabled || !CurrentCall.IsIncoming)
+                if (!form.IsTransferEnabled)
                     SetupDevices();
+                else if (form.IsTransferEnabled && !CurrentCall.IsIncoming && form.CouplePhone != CurrentCall.DialInfo.CallerID)
+                {
+                    StartOutgoingCalls(form.CouplePhone);
+                    Log($"Transfer call to .. " + form.CouplePhone, "MainForm");
+                    
+                }
                 StartCallTimer();
                 _conferenceRoom.CallConnected += ConfrenceConected;
                 _conferenceRoom.CallDisconnected += ConfrenceDisconected;
@@ -360,32 +373,33 @@ namespace sipservice
             {
 
             }
+            if (e.State == CallState.LocalHeld)
+            {
+
+            }
             if (e.State.IsCallEnded())
             {
-                Log("call completed duration was :" + callDurationSeconds);
-                if (incomingCallForm != null)
-                {
-                    incomingCallForm.UpdateLabelText("call completed duration was :" + callDurationSeconds);
-                }
+                Log("call completed duration was :" + callDurationSeconds, "MainForm");
                 _conferenceRoom.CallConnected -= ConfrenceConected;
                 _conferenceRoom.CallDisconnected -= ConfrenceDisconected;
-                DisposeCall(call1);
+                RejectCall();
             }
         }
         void DisposeCall(IPhoneCall call)
         {
-            call.CallStateChanged -= (call_CallStateChanged);
+            if (call != null)
+                call.CallStateChanged -= (call_CallStateChanged);
             StopCallTimer();
         }
         private void SetupDevices()
         {
             try
             {
-                //_conferenceRoom.ConnectReceiver(speaker);
-                //_conferenceRoom.ConnectSender(microphone);
+                _conferenceRoom.ConnectReceiver(speaker);
+                _conferenceRoom.ConnectSender(microphone);
 
-                connector.Connect(microphone, mediaSender);
-                connector.Connect(mediaReceiver, speaker);
+                //connector.Connect(microphone, mediaSender);
+                //connector.Connect(mediaReceiver, speaker);
 
                 mediaSender.AttachToCall(call1);
                 mediaReceiver.AttachToCall(call1);
@@ -402,9 +416,20 @@ namespace sipservice
             }
 
         }
-        private void Log(string message)
+        private void Log(string message, string FormType)
         {
-            form.UpdateLog(message);
+            if (FormType == "MainForm")
+            {
+                form.UpdateLog(message);
+            }
+            if (FormType == "IncomingCallForm" && incomingCallForm?.ctlCallInfo?.txtLog != null)
+            {
+                incomingCallForm.UpdateLabelText(message);
+            }
+            if (FormType == "OutGoingCallForm" && OutGoingCall?.ctlCallInfo?.txtLog != null)
+            {
+                incomingCallForm.UpdateLabelText(message);
+            }
         }
         internal void AnswerCall()
         {
@@ -412,8 +437,17 @@ namespace sipservice
         }
         internal void RejectCall()
         {
-            call1.HangUp();
+            if (call1 != null)
+            {
+                call1.HangUp();
+                DisposeCall(call2);
+            }
             StopCallTimer();
+            if (call2 != null)
+            {
+                call2.HangUp();
+                DisposeCall(call2);
+            }
         }
         internal void DropCall()
         {
@@ -446,9 +480,13 @@ namespace sipservice
             TimeSpan duration = TimeSpan.FromSeconds(callDurationSeconds);
             form.UpdateTextBoxText(form.recivedCallTime, string.Format("{0:D2}:{1:D2}:{2:D2}", duration.Hours, duration.Minutes, duration.Seconds));
         }
-        internal async Task<bool> CallRedirectAPI(string BarcaFormID)
+        internal async Task<bool> CallRedirectAPI(string BarcaFormID, bool reset = false)
         {
-            string apiUrl = "http://localhost:4172/api2/incomingCall/0.1/IncomingCallRedirection?input=" + BarcaFormID;
+            if (reset)
+            {
+                NumberOfTries = 0;
+            }
+            string apiUrl = $"http://{form.BarsaAddress}/api2/incomingCall/0.1/IncomingCallRedirection?input={BarcaFormID}";
             string localIpAddress = GetLocalIpAddress();
 
             using (HttpClient client = new HttpClient())
@@ -465,48 +503,52 @@ namespace sipservice
                         var responseObj = JsonConvert.DeserializeAnonymousType(responseBody, new { output = false });
 
                         bool result = responseObj.output;
-                        //MessageBox.Show("Third API Response: " + result, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                        var completedTask = await
-                                Task.Run(() => SynchronizationManager.Instance.WaitForFormShown(500));
+                        var completedTask = await Task.Run(() => SynchronizationManager.Instance.WaitForFormShown(1500));
 
                         if (completedTask == true)
                         {
-                            //form shown within the specified time
+                            //Sucsses: form shown within the specified time
+                            NumberOfTries = 0;
                             return true;
                         }
                         else
                         {
-
-                            string LoginCode = await CallGetLoginCodeApi(bearerToken, localIpAddress);
-                            string urlToOpen = "http://localhost:4172/api/openid/callback?provider=AgentLogin&LoginCode=" + LoginCode;
-                            System.Diagnostics.Process.Start(urlToOpen);
-
-                            await Task.Delay(2000);
+                            if (NumberOfTries == 0)
+                            {
+                                ShowPassord PassForn = new ShowPassord(this);
+                                PassForn.Show();
+                                //string LoginCode = await CallGetLoginCodeApi(bearerToken, localIpAddress);
+                                //string urlToOpen = $"http://{form.BarsaAddress}/api/openid/callback?provider=AgentLogin&LoginCode={LoginCode}&url={HttpUtility.UrlEncode($"http://{form.BarsaAddress}")}";
+                                //Process.Start(urlToOpen);
+                            }
+                            NumberOfTries++;
+                            await Task.Delay(500);
+                            if (NumberOfTries <= 12)
+                            {
+                                _ = CallRedirectAPI(BarcaFormID);
+                            }
 
                             // Make another HTTP request
-                            response = await client.PostAsync(apiUrl, null);
+                            //response = await client.PostAsync(apiUrl, null);
 
-                            if (response.IsSuccessStatusCode)
-                            {
-                                responseBody = await response.Content.ReadAsStringAsync();
-                                responseObj = JsonConvert.DeserializeAnonymousType(responseBody, new { output = false });
-                                result = responseObj.output;
-
-                                // Your additional logic here
-
-                                return result;
-                            }
-                            else
-                            {
-                                // Handle HTTP request failure
-                                return false;
-                            }
+                            //if (response.IsSuccessStatusCode)
+                            //{
+                            //    responseBody = await response.Content.ReadAsStringAsync();
+                            //    responseObj = JsonConvert.DeserializeAnonymousType(responseBody, new { output = false });
+                            //    result = responseObj.output;
+                            //    return result;
+                            //}
+                            //else
+                            //{
+                            //    return false;
+                            //}
                         }
                     }
                     else
                     {
-                        MessageBox.Show("Third API Error: " + response.StatusCode, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Caller User NotFound!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        //MessageBox.Show("Third API Error: " + response.StatusCode, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 catch (Exception ex)
@@ -516,16 +558,73 @@ namespace sipservice
                 return false;
             }
         }
+        public async void RedirectAfterPass(string Password)
+        {
+            string LocalToken;
+            string loginApiUrl = "http://" + form.BarsaAddress + "/api/auth/serviceLogin3";
+
+            var credentials = new
+            {
+                un = form.BarsaUser,
+                pwd = Password,
+            };
+            var jsonBody = JsonConvert.SerializeObject(credentials);
+            var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    HttpResponseMessage loginResponse = await client.PostAsync(loginApiUrl, content);
+
+                    if (loginResponse.IsSuccessStatusCode)
+                    {
+                        string loginResponseBody = await loginResponse.Content.ReadAsStringAsync();
+
+                        var loginResponseData = JsonConvert.DeserializeObject<LoginResponse>(loginResponseBody);
+
+                        if (loginResponseData.succeed)
+                        {
+                            // Remove "Bearer" prefix if present
+                            string cleanBearerToken = loginResponseData.data.token.StartsWith("bearer ", StringComparison.OrdinalIgnoreCase)
+                                ? loginResponseData.data.token.Substring(7)
+                                : loginResponseData.data.token;
+                            //TODO: should remoe this for tird api ??
+                            LocalToken = cleanBearerToken;
+                            string localIpAddress = GetLocalIpAddress();
+                            string LoginCode = await CallGetLoginCodeApi(LocalToken, localIpAddress);
+                            string urlToOpen = $"http://{form.BarsaAddress}/api/openid/callback?provider=AgentLogin&LoginCode={LoginCode}&url={HttpUtility.UrlEncode($"http://{form.BarsaAddress}")}";
+                            Process.Start(urlToOpen);
+
+                            //  return cleanBearerToken;
+                        }
+                        else
+                        {
+                            HandleApiError("Login API Error: " + loginResponseBody);
+                        }
+                    }
+                    else
+                    {
+                        HandleApiError("Login API Error: " + loginResponse.StatusCode);
+                    }
+                
+                // return string.Empty;
+
+
+                
+                }
+                catch (Exception ex)
+                {
+                    HandleException("Exception during API call: " + ex.Message);
+                }
+            }
+        }
         private string GetLocalIpAddress()
         {
-            // Get the local machine's IP addresses
             string hostName = Dns.GetHostName();
             IPHostEntry ipEntry = Dns.GetHostEntry(hostName);
             IPAddress[] addresses = ipEntry.AddressList;
-
-            // Find the first IPv4 address (you may adjust this logic based on your requirements)
             IPAddress localIpAddress = addresses.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
-
             return localIpAddress?.ToString() ?? "Unknown";
         }
         private void HandleApiError(string errorMessage)
@@ -536,6 +635,19 @@ namespace sipservice
         private void HandleException(string errorMessage)
         {
             MessageBox.Show(errorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        internal void PutCallOnHold()
+        {
+
+            if (ActualCall.CallState == CallState.InCall)
+                ActualCall.Hold();
+        }
+
+        internal void UnHoldCall()
+        {
+            if (ActualCall.CallState == CallState.LocalHeld)
+                ActualCall.Unhold();
         }
     }
 }

@@ -85,18 +85,6 @@ namespace SIPWindowsAgent.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("false")]
-        public bool TransferphoneCheckBox {
-            get {
-                return ((bool)(this["TransferphoneCheckBox"]));
-            }
-            set {
-                this["TransferphoneCheckBox"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string SIPServerAddressTextBox {
             get {
@@ -116,6 +104,30 @@ namespace SIPWindowsAgent.Properties {
             }
             set {
                 this["SIPServerPortTextBox"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("localhost:4172")]
+        public string BarsaAddress {
+            get {
+                return ((string)(this["BarsaAddress"]));
+            }
+            set {
+                this["BarsaAddress"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool TransferphoneCheckBox {
+            get {
+                return ((bool)(this["TransferphoneCheckBox"]));
+            }
+            set {
+                this["TransferphoneCheckBox"] = value;
             }
         }
     }

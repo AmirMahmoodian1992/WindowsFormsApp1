@@ -117,303 +117,98 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="btnAnswer.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="btnAnswer.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="txtLog.Location" type="System.Drawing.Point, System.Drawing">
-    <value>22, 205</value>
+  <data name="btnAnswer.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 247</value>
+  </data>
+  <data name="btnAnswer.Size" type="System.Drawing.Size, System.Drawing">
+    <value>105, 23</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="txtLog.Multiline" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="txtLog.Size" type="System.Drawing.Size, System.Drawing">
-    <value>417, 37</value>
-  </data>
-  <data name="txtLog.TabIndex" type="System.Int32, mscorlib">
-    <value>17</value>
-  </data>
-  <data name="&gt;&gt;txtLog.Name" xml:space="preserve">
-    <value>txtLog</value>
-  </data>
-  <data name="&gt;&gt;txtLog.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txtLog.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;txtLog.ZOrder" xml:space="preserve">
-    <value>10</value>
-  </data>
-  <data name="BarcaCallerPicture.AccessibleName" xml:space="preserve">
-    <value>CallerPicture</value>
-  </data>
-  <data name="BarcaCallerPicture.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        EQAACxEBf2RfkQAAAbNJREFUaEPt2N0qbWEYhuHpP7KxNpTDESlKkRVyBM5ASsgW9hwEtrROxN5itfzk
-        /wQIm2Ldb1ll45nDmN83eF817rpKTN98JiZjatTVfZ+6MINdHOMJj29v2/vsY3ab0E3hDK8fsNvYbcPV
-        jk2o0c28YAP2uWFq9UG8Zw8mRPYjYl9dNbIM+9xJuGZP2jLPiY9coBtu2W8gNSyFneXWHtSoFDtw6xRq
-        VIoTuGV/6NSoFHaWW2pQDrfUmBxuqTE53FJjcrilxuRwS43J4dY91KAUdpZbh1CjUvyGW/aKT41K4XqJ
-        MgE1KsU43OrEFdSwVpzDznJtBLkvrEYRom2okWXYy+RQrUMNLbKFkKmxRcKmxhYJmxpbJGxqbJGQDUKN
-        LTKAMLVhGpdQY4scYRiudWAeVVw4HmAOduaX1Y8FVPmvoP/scmcJP/Bp9WENVb4GaeYOK+hFpdnP8S3U
-        nX6mawyhkuxb/Qx1R1/B7nsRWa1CHe5hGUnZpXXO5XnVbMsYWqoHN1AHerLnjG0r3SzUQRH8ROl+QR0S
-        wT5K9xfqkAj+oHQPUIdEYNtKpw6IpK6urqUajX+w1ZzEmyMMbAAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="BarcaCallerPicture.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="BarcaCallerPicture.Location" type="System.Drawing.Point, System.Drawing">
-    <value>22, 52</value>
-  </data>
-  <data name="BarcaCallerPicture.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 115</value>
-  </data>
-  <data name="BarcaCallerPicture.TabIndex" type="System.Int32, mscorlib">
-    <value>18</value>
-  </data>
-  <data name="&gt;&gt;BarcaCallerPicture.Name" xml:space="preserve">
-    <value>BarcaCallerPicture</value>
-  </data>
-  <data name="&gt;&gt;BarcaCallerPicture.Type" xml:space="preserve">
-    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;BarcaCallerPicture.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;BarcaCallerPicture.ZOrder" xml:space="preserve">
-    <value>9</value>
-  </data>
-  <data name="texllabel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="texllabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>149, 59</value>
-  </data>
-  <data name="texllabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>27, 13</value>
-  </data>
-  <data name="texllabel.TabIndex" type="System.Int32, mscorlib">
-    <value>19</value>
-  </data>
-  <data name="texllabel.Text" xml:space="preserve">
-    <value>Title</value>
-  </data>
-  <data name="&gt;&gt;texllabel.Name" xml:space="preserve">
-    <value>texllabel</value>
-  </data>
-  <data name="&gt;&gt;texllabel.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;texllabel.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;texllabel.ZOrder" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="TitleBarcaCaller.Location" type="System.Drawing.Point, System.Drawing">
-    <value>182, 52</value>
-  </data>
-  <data name="TitleBarcaCaller.Size" type="System.Drawing.Size, System.Drawing">
-    <value>257, 20</value>
-  </data>
-  <data name="TitleBarcaCaller.TabIndex" type="System.Int32, mscorlib">
-    <value>20</value>
-  </data>
-  <data name="&gt;&gt;TitleBarcaCaller.Name" xml:space="preserve">
-    <value>TitleBarcaCaller</value>
-  </data>
-  <data name="&gt;&gt;TitleBarcaCaller.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;TitleBarcaCaller.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;TitleBarcaCaller.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-  <data name="declabel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="declabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>149, 93</value>
-  </data>
-  <data name="declabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>60, 13</value>
-  </data>
-  <data name="declabel.TabIndex" type="System.Int32, mscorlib">
-    <value>21</value>
-  </data>
-  <data name="declabel.Text" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="&gt;&gt;declabel.Name" xml:space="preserve">
-    <value>declabel</value>
-  </data>
-  <data name="&gt;&gt;declabel.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;declabel.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;declabel.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="DescriptionBarcaCaller.Location" type="System.Drawing.Point, System.Drawing">
-    <value>182, 122</value>
-  </data>
-  <data name="DescriptionBarcaCaller.Multiline" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="DescriptionBarcaCaller.Size" type="System.Drawing.Size, System.Drawing">
-    <value>257, 77</value>
-  </data>
-  <data name="DescriptionBarcaCaller.TabIndex" type="System.Int32, mscorlib">
-    <value>22</value>
-  </data>
-  <data name="&gt;&gt;DescriptionBarcaCaller.Name" xml:space="preserve">
-    <value>DescriptionBarcaCaller</value>
-  </data>
-  <data name="&gt;&gt;DescriptionBarcaCaller.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;DescriptionBarcaCaller.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;DescriptionBarcaCaller.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="BarcaWebRedirect.Location" type="System.Drawing.Point, System.Drawing">
-    <value>22, 259</value>
-  </data>
-  <data name="BarcaWebRedirect.Size" type="System.Drawing.Size, System.Drawing">
-    <value>138, 23</value>
-  </data>
-  <data name="BarcaWebRedirect.TabIndex" type="System.Int32, mscorlib">
-    <value>23</value>
-  </data>
-  <data name="BarcaWebRedirect.Text" xml:space="preserve">
-    <value>Go To Barca WEB</value>
-  </data>
-  <data name="&gt;&gt;BarcaWebRedirect.Name" xml:space="preserve">
-    <value>BarcaWebRedirect</value>
-  </data>
-  <data name="&gt;&gt;BarcaWebRedirect.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;BarcaWebRedirect.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;BarcaWebRedirect.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="BarcaCallerFormID.Location" type="System.Drawing.Point, System.Drawing">
-    <value>22, 179</value>
-  </data>
-  <data name="BarcaCallerFormID.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 20</value>
-  </data>
-  <data name="BarcaCallerFormID.TabIndex" type="System.Int32, mscorlib">
-    <value>24</value>
-  </data>
-  <data name="BarcaCallerFormID.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="&gt;&gt;BarcaCallerFormID.Name" xml:space="preserve">
-    <value>BarcaCallerFormID</value>
-  </data>
-  <data name="&gt;&gt;BarcaCallerFormID.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;BarcaCallerFormID.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;BarcaCallerFormID.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="label1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Bottom, Left, Right</value>
-  </data>
-  <data name="label1.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label1.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 12pt</value>
-  </data>
-  <data name="label1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>99, 9</value>
-  </data>
-  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>224, 20</value>
-  </data>
-  <data name="label1.TabIndex" type="System.Int32, mscorlib">
-    <value>25</value>
-  </data>
-  <data name="label1.Text" xml:space="preserve">
-    <value>You Have New Incomin Call  ...</value>
-  </data>
-  <data name="&gt;&gt;label1.Name" xml:space="preserve">
-    <value>label1</value>
-  </data>
-  <data name="&gt;&gt;label1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="button2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>218, 259</value>
-  </data>
-  <data name="button2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>105, 23</value>
-  </data>
-  <data name="button2.TabIndex" type="System.Int32, mscorlib">
+  <data name="btnAnswer.TabIndex" type="System.Int32, mscorlib">
     <value>27</value>
   </data>
-  <data name="button2.Text" xml:space="preserve">
-    <value>Answer</value>
+  <data name="btnAnswer.Text" xml:space="preserve">
+    <value>پاسخ</value>
   </data>
-  <data name="&gt;&gt;button2.Name" xml:space="preserve">
-    <value>button2</value>
+  <data name="&gt;&gt;btnAnswer.Name" xml:space="preserve">
+    <value>btnAnswer</value>
   </data>
-  <data name="&gt;&gt;button2.Type" xml:space="preserve">
+  <data name="&gt;&gt;btnAnswer.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;button2.Parent" xml:space="preserve">
+  <data name="&gt;&gt;btnAnswer.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;button2.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="&gt;&gt;btnAnswer.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
-  <data name="button3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>334, 259</value>
+  <data name="btnDrop.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
   </data>
-  <data name="button3.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="btnDrop.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="btnDrop.Location" type="System.Drawing.Point, System.Drawing">
+    <value>123, 247</value>
+  </data>
+  <data name="btnDrop.Size" type="System.Drawing.Size, System.Drawing">
     <value>105, 23</value>
   </data>
-  <data name="button3.TabIndex" type="System.Int32, mscorlib">
+  <data name="btnDrop.TabIndex" type="System.Int32, mscorlib">
     <value>26</value>
   </data>
-  <data name="button3.Text" xml:space="preserve">
-    <value>Regect Or Drop</value>
+  <data name="btnDrop.Text" xml:space="preserve">
+    <value>قطع تماس</value>
   </data>
-  <data name="&gt;&gt;button3.Name" xml:space="preserve">
-    <value>button3</value>
+  <data name="&gt;&gt;btnDrop.Name" xml:space="preserve">
+    <value>btnDrop</value>
   </data>
-  <data name="&gt;&gt;button3.Type" xml:space="preserve">
+  <data name="&gt;&gt;btnDrop.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;button3.Parent" xml:space="preserve">
+  <data name="&gt;&gt;btnDrop.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;button3.ZOrder" xml:space="preserve">
-    <value>1</value>
+  <data name="&gt;&gt;btnDrop.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="ctlCallInfo.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Tahoma, 8.25pt</value>
+  </data>
+  <data name="ctlCallInfo.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="ctlCallInfo.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 12</value>
+  </data>
+  <data name="ctlCallInfo.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
+    <value>Yes</value>
+  </data>
+  <data name="ctlCallInfo.Size" type="System.Drawing.Size, System.Drawing">
+    <value>380, 229</value>
+  </data>
+  <data name="ctlCallInfo.TabIndex" type="System.Int32, mscorlib">
+    <value>28</value>
+  </data>
+  <data name="&gt;&gt;ctlCallInfo.Name" xml:space="preserve">
+    <value>ctlCallInfo</value>
+  </data>
+  <data name="&gt;&gt;ctlCallInfo.Type" xml:space="preserve">
+    <value>SIPWindowsAgent.CallInfoControl, SIPWindowsAgent, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;ctlCallInfo.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;ctlCallInfo.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -422,16 +217,22 @@
     <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>451, 299</value>
+    <value>404, 282</value>
+  </data>
+  <data name="$this.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Tahoma, 8.25pt</value>
   </data>
   <data name="$this.Location" type="System.Drawing.Point, System.Drawing">
     <value>200, 200</value>
+  </data>
+  <data name="$this.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
+    <value>Yes</value>
   </data>
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
     <value>Manual</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Form2</value>
+    <value>تماس وارده ...</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>IncomingCallForm</value>

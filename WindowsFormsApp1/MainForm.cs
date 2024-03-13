@@ -7,6 +7,9 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using sipservice;
 using Nancy.Hosting.Self;
 using utils;
+using System.Configuration;
+using Ozeki.Network;
+using System.Threading.Tasks;
 
 namespace SIPWindowsAgent
 {
@@ -30,6 +33,8 @@ namespace SIPWindowsAgent
         public string BarsaUser;
         public string BarsaPass;
         public bool IsTransferEnabled;
+        internal string BarsaAddress;
+        CallerData callerData;
 
         public MainForm()
         {
@@ -49,8 +54,51 @@ namespace SIPWindowsAgent
                 nancyStarted = true;
                 //SynchronizationManager.Instance.SetFormShown();
 
+
+            }
+
+            SettingsManager settingsManager = new SettingsManager();
+            AppConfig config = settingsManager.LoadSettings();
+
+            // Populate the ListBox with BarsaUsernames
+            //foreach (SipSettings property in config.SipSettings[username])
+            //{
+            //    if (property.Name.StartsWith("BarcaUsername_"))
+            //    {
+            //        string username = property.Name.Replace("BarcaUsername_", "");
+            //        lstBarcaUsernames.Items.Add(username);
+            //    }
+            //}
+            if (config!= null)
+            {
+                foreach (var userEntry in config.SipSettings)
+                {
+                    string usernameBarsa = userEntry.Key;
+
+                    // Assuming BarcaUsername is a property of UserSettings
+                    string barcaUsername = userEntry.Value.BarsaUserName;
+
+                    lstBarcaUsernames.Items.Add(barcaUsername);
+                }
+            }
+
+            // Add an event handler for the SelectedIndexChanged event
+            lstBarcaUsernames.SelectedIndexChanged += LstBarcaUsernames_SelectedIndexChanged;
+
+            // If there are items in the ListBox, select the first one to trigger the event
+            if (lstBarcaUsernames.Items.Count > 0)
+            {
+                lstBarcaUsernames.SelectedIndex = 0;
             }
         }
+
+        private void LstBarcaUsernames_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Update the form with the selected BarsaUsername's settings
+            string selectedUsername = lstBarcaUsernames.SelectedItem.ToString();
+
+        }
+
 
         private void InitializeSettingParameters()
         {
@@ -59,6 +107,7 @@ namespace SIPWindowsAgent
             IsTransferEnabled = Properties.Settings.Default.TransferphoneCheckBox;
             BarsaUser = Properties.Settings.Default.BarcaUsername;
             BarsaPass = Properties.Settings.Default.BarcaPass;
+            BarsaAddress = Properties.Settings.Default?.BarsaAddress;
         }
 
         private void StartNancyApi()
@@ -87,23 +136,25 @@ namespace SIPWindowsAgent
 
         }
 
-        public void CreatCallFromApi(string Number)
+        public async void CreatCallFromApi(string Number)
         {
 
-            if (txtCallNumber.InvokeRequired || incominNumber.InvokeRequired)
+            if (txtCallNumber.InvokeRequired)
             {
                 this.Invoke(new Action(() => CreatCallFromApi(Number)));
             }
             else
             {
-                txtCallNumber.Text = Number;
+                string Token= await sipService.CallTokenAPI();
+                callerData= await sipService.CallGetCallerInfoApi(Token, Number);
+                txtCallNumber.Text = callerData.Number;
                 btnCall.PerformClick();
             }
         }
 
         public void CreateCall(object sender, EventArgs e)
         {
-            sipService.CreateCall(txtCallNumber.Text);
+            sipService.CreateCall(txtCallNumber.Text, callerData);
         }
         private void DropCall(object sender, EventArgs e)
         {
@@ -133,21 +184,21 @@ namespace SIPWindowsAgent
             }
         }
 
-        internal void Incomingcall(string callerIDAsCaller)
-        {
-            incominNumber.Text = callerIDAsCaller;
-        }
-        public void UpdateIncomingNumber(string number)
-        {
-            if (incominNumber.InvokeRequired)
-            {
-                incominNumber.Invoke(new Action(() => UpdateIncomingNumber(number)));
-            }
-            else
-            {
-                incominNumber.Text = number;
-            }
-        }
+        //internal void Incomingcall(string callerIDAsCaller)
+        //{
+        //    incominNumber.Text = callerIDAsCaller;
+        //}
+        //public void UpdateIncomingNumber(string number)
+        //{
+        //    if (incominNumber.InvokeRequired)
+        //    {
+        //        incominNumber.Invoke(new Action(() => UpdateIncomingNumber(number)));
+        //    }
+        //    else
+        //    {
+        //        incominNumber.Text = number;
+        //    }
+        //}
         private void recivedCallTime_Click(object sender, EventArgs e)
         {
 
@@ -185,7 +236,7 @@ namespace SIPWindowsAgent
 
         private void button4_Click(object sender, EventArgs e)
         {
-            sipService.StartOutgoingCalls(couplePhone.Text);
+            sipService.StartOutgoingCalls(CouplePhone);
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -200,8 +251,28 @@ namespace SIPWindowsAgent
 
         private void SettingButton_Click(object sender, EventArgs e)
         {
-            SettingsForm settingsForm = new SettingsForm(sipService, this);
+            SettingsForm settingsForm = new SettingsForm(sipService, this, false);
             settingsForm.ShowDialog();
+        }
+
+        private void MuteButton_Click(object sender, EventArgs e)
+        {
+            sipService.PutCallOnHold();
+        }
+
+        private void UnmuteButton_Click(object sender, EventArgs e)
+        {
+            sipService.UnHoldCall();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SettingsForm settingsForm = new SettingsForm(sipService, this, true);
+            settingsForm.ShowDialog();
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
         }
     }
 }

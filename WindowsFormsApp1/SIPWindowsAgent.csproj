@@ -71,6 +71,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.Cors, Version=5.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Cors.5.3.0\lib\net45\System.Web.Cors.dll</HintPath>
     </Reference>
@@ -87,12 +88,36 @@
   <ItemGroup>
     <Compile Include="ApiModule.cs" />
     <Compile Include="CallerResponse.cs" />
+    <Compile Include="CallInfoControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CallInfoControl.Designer.cs">
+      <DependentUpon>CallInfoControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OutGoingCallForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OutGoingCallForm.Designer.cs">
+      <DependentUpon>OutGoingCallForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ShowPassord.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShowPassord.Designer.cs">
+      <DependentUpon>ShowPassord.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SipSettings.cs" />
     <Compile Include="SynchronizationManager.cs" />
     <Compile Include="IncomingCallForm.cs">
       <SubType>Form</SubType>
@@ -110,8 +135,15 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
+    <Compile Include="UserSettingsManager.cs" />
+    <EmbeddedResource Include="CallInfoControl.resx">
+      <DependentUpon>CallInfoControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OutGoingCallForm.resx">
+      <DependentUpon>OutGoingCallForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
@@ -129,21 +161,20 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="ShowPassord.resx">
+      <DependentUpon>ShowPassord.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\BNazanin.ttf" />
     <None Include="Resources\icons8-customer-50.png" />
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +191,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\hide.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

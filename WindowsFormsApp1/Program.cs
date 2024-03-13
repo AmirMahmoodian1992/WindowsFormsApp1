@@ -17,6 +17,10 @@ namespace SIPWindowsAgent
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            //Application.Run(new MainForm());
+
+            //TestForm();
+
             Application.Run(new MainForm());
 
             //Thread client1Thread = new Thread(() =>
@@ -53,6 +57,15 @@ namespace SIPWindowsAgent
 
             //// Keep the main thread alive
             //Application.Run();
+        }
+
+        private static void TestForm()
+        {
+            var form = new IncomingCallForm();
+            var data = CallInfoControl.GetTestData();
+            form.ShowData(data, "0912657575", true, id => MessageBox.Show("Open " + id));
+            form.Show();
+            Application.Run(form);
         }
     }
 }

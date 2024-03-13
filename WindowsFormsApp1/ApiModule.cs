@@ -10,15 +10,15 @@ public class ExampleApiModule : NancyModule
 
     public ExampleApiModule()
     {
-        Get("/api/call/{Number}", parameters => HandleCall(parameters.Number));
+        Get("/api/call/{Id}", parameters => HandleCall(parameters.Id));
         Get("/api/isformshown", _ => IsFormShown());
 
     }
 
-    private dynamic HandleCall(string Number)
+    private dynamic HandleCall(string Id)
     {
         MainForm frm = MainForm.SingleFormInstance;
-        frm.CreatCallFromApi(Number);
+        frm.CreatCallFromApi(Id);
         return HttpStatusCode.OK;
     }
     private dynamic IsFormShown()

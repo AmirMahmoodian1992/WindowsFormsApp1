@@ -1,12 +1,7 @@
-﻿using sipservice;
+﻿using onvif.services;
+using sipservice;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SIPWindowsAgent
@@ -17,74 +12,63 @@ namespace SIPWindowsAgent
         public event EventHandler RejectButtonClicked;
         private SIPService sipService;
 
+        public void Open(string id)
+        {
+
+        }
+
         public IncomingCallForm()
         {
             InitializeComponent();
         }
         public IncomingCallForm(string callerInfo)
         {
-
             InitializeComponent();
+            ctlCallInfo.AddLog($"Incoming Call from: {callerInfo}");
             // Set the caller information in the form
-            txtLog.AppendText($"Incoming Call from: {callerInfo}" + Environment.NewLine);  
         }
-        public IncomingCallForm(CallerResponse callerInfo, SIPService sipService)
+        public IncomingCallForm(String CallerID, CallerData callerInfo, SIPService sipService)
         {
 
             InitializeComponent();
             this.sipService = sipService;
             // Set the caller information in the form
-            txtLog.AppendText($"Incoming Call from: {callerInfo.CallerMO[3]}" + Environment.NewLine);
-            TitleBarcaCaller.Text = callerInfo.CallerMO[2];
-            BarcaCallerFormID.Text = callerInfo.CallerMO[1];
-            foreach (string key in callerInfo.CallerMO)
+            try
             {
-                DescriptionBarcaCaller.Text += key + Environment.NewLine;
+                if (callerInfo.Items[0] != null)
+                {
+                    ShowData(callerInfo, CallerID, true, (s) => sipService.CallRedirectAPI(s));
+
+                    //txtLog.AppendText($"Incoming Call from: {callerInfo.Items[0].Label}" + Environment.NewLine);
+                    //TitleBarcaCaller.Text = callerInfo.Items[0].Label != "Unknown" ? callerInfo.Items[0].Label : CallerID;
+                    //BarcaCallerFormID.Text = callerInfo.Items[0].Id;
+                    //foreach (CallerDataItem key in callerInfo.Items)
+                    //{
+                    //    DescriptionBarcaCaller.Text += key.Text + Environment.NewLine;
+                    //}
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("cannot load user data!!!");
             }
         }
+
+        public void ShowData(CallerData data, string callerNumber, bool isInput, Action<string> openMethod)
+        {
+            ctlCallInfo.ShowData(data, callerNumber, isInput, openMethod);
+        }
+
         private void button1_Click_1(object sender, EventArgs e)
         {
             Close();
         }
         public void UpdateLabelText(string newText)
         {
-            if (txtLog.InvokeRequired)
-            {
-                txtLog.Invoke(new Action(() => txtLog.AppendText(newText + Environment.NewLine)));
-            }
-            else
-            {
-                //if (txtLog != null)
-                //{
-                //    txtLog.AppendText(newText + Environment.NewLine);
-                //}
-            }
+            ctlCallInfo.AddLog(newText);
         }
 
-        private void label4_Click(object sender, EventArgs e)
-        {
 
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void DescriptionBarcaCaller_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            sipService.CallRedirectAPI(BarcaCallerFormID.Text);
-        }
-
-        private void textBox1_TextChanged_1(object sender, EventArgs e)
-        {
-
-        }
 
         private void IncomingCallForm_Load(object sender, EventArgs e)
         {
@@ -95,10 +79,6 @@ namespace SIPWindowsAgent
             this.Top = screenWorkingAreaHeight - this.Height;
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void button2_Click_1(object sender, EventArgs e)
         {
@@ -107,7 +87,10 @@ namespace SIPWindowsAgent
 
         private void button3_Click(object sender, EventArgs e)
         {
-            sipService.RejectCall();
+            if (sipService != null)
+            {
+                sipService.RejectCall();
+            }
             Close();
         }
     }

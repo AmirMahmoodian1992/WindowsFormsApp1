@@ -12,4 +12,57 @@ namespace SIPWindowsAgent
         [JsonProperty("CallerMO")]
         public string[] CallerMO { get; set; }
     }
+
+    public class CallerDataItem
+    {
+        public string Label
+        {
+            get; set;
+        }
+        public string Text
+        {
+            get; set;
+        }
+        public string Id
+        {
+            get; set;
+        }
+    }
+
+    public class CallerData
+    {
+        public CallerData()
+        {
+            Items = new List<CallerDataItem>();
+        }
+        //		icon
+        public string Type
+        {
+            get; set;
+        }
+        public string Title
+        {
+            get; set;
+        }
+        public string Id
+        {
+            get; set;
+        }
+        public string Number
+        {
+            get; set;
+        }
+        public List<CallerDataItem> Items
+        {
+            get; set;
+        }
+
+    }
+    public class InfoData
+    {
+        public string CallerJson
+        {
+            get; set;
+        }
+    }
 }

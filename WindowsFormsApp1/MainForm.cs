@@ -10,6 +10,12 @@ using utils;
 using System.Configuration;
 using Ozeki.Network;
 using System.Threading.Tasks;
+using Ozeki.Common;
+using Ozeki;
+using System.Text.RegularExpressions;
+using System.Drawing;
+using System.Net.Http;
+using System.Collections.Generic;
 
 namespace SIPWindowsAgent
 {
@@ -21,10 +27,12 @@ namespace SIPWindowsAgent
         private NancyHost _nancyHost;
         private static bool nancyStarted = false;
         ExampleApiModule exampleApiModule;
+        AppConfig config;
 
         private static MainForm singleFormInstance;
         public static MainForm SingleFormInstance { get { return singleFormInstance; } }
 
+        public string userToken { get; internal set; }
 
         private static int instanceCount = 0;
         public bool TransferPhoneActive;
@@ -34,51 +42,60 @@ namespace SIPWindowsAgent
         public string BarsaPass;
         public bool IsTransferEnabled;
         internal string BarsaAddress;
-        CallerData callerData;
+        List<CallerData> callerData;
+        SettingsForm settingsForm;
+        private Size previousFormSize;
+        ApiServiceHelper apiServiceHelper;
+        SettingsManager settingsManager;
+
+        private OutgoingCallForm OutGoingCall;
+
+
+        string selectedSipAccount;
 
         public MainForm()
         {
             InitializeComponent();
-            sipService = new SIPService(this);
+            apiServiceHelper = new ApiServiceHelper();
+            sipService = new SIPService(this, apiServiceHelper);
             singleFormInstance = this;
+            settingsManager = new SettingsManager();
+            
         }
 
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            InitializeSettingParameters();
             RegisterAccount();
             if (!nancyStarted)
             {
                 StartNancyApi();
                 nancyStarted = true;
-                //SynchronizationManager.Instance.SetFormShown();
-
-
             }
+            LoadingSipAccountsInListBox();
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
+            MinimizeBox = false;
+        }
+        internal void LoadingSipAccountsInListBox()
+        {
+            lstBarcaUsernames.Items.Clear();
+            //SettingsManager settingsManager = new SettingsManager();
+            config = settingsManager.LoadSettings();
 
-            SettingsManager settingsManager = new SettingsManager();
-            AppConfig config = settingsManager.LoadSettings();
-
-            // Populate the ListBox with BarsaUsernames
-            //foreach (SipSettings property in config.SipSettings[username])
-            //{
-            //    if (property.Name.StartsWith("BarcaUsername_"))
-            //    {
-            //        string username = property.Name.Replace("BarcaUsername_", "");
-            //        lstBarcaUsernames.Items.Add(username);
-            //    }
-            //}
-            if (config!= null)
+            if (config != null)
             {
-                foreach (var userEntry in config.SipSettings)
+                foreach (var sipAccount in config.SipSettings)
                 {
-                    string usernameBarsa = userEntry.Key;
-
-                    // Assuming BarcaUsername is a property of UserSettings
-                    string barcaUsername = userEntry.Value.BarsaUserName;
-
-                    lstBarcaUsernames.Items.Add(barcaUsername);
+                    if (sipAccount.Value.RegistrableOnClient)
+                    {
+                        {
+                            string sipAccountNumeber = sipAccount.Key;
+                            if (sipAccount.Value.IsItDefault)
+                                sipAccountNumeber += "(Default)";
+                            lstBarcaUsernames.Items.Add(sipAccountNumeber);
+                        }
+                    }
                 }
             }
 
@@ -94,22 +111,10 @@ namespace SIPWindowsAgent
 
         private void LstBarcaUsernames_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Update the form with the selected BarsaUsername's settings
             string selectedUsername = lstBarcaUsernames.SelectedItem.ToString();
-
+            selectedSipAccount = selectedUsername.EndsWith("(Default)") ? selectedUsername.Substring(0, selectedUsername.Length - "(Default)".Length).Trim() : selectedUsername;
+            sipService.phoneLine = sipService.phonLines.Find(item => item.SIPAccount.UserName == selectedSipAccount);
         }
-
-
-        private void InitializeSettingParameters()
-        {
-            Properties.Settings.Default.Reload();
-            CouplePhone = Properties.Settings.Default.CouplePhone;
-            IsTransferEnabled = Properties.Settings.Default.TransferphoneCheckBox;
-            BarsaUser = Properties.Settings.Default.BarcaUsername;
-            BarsaPass = Properties.Settings.Default.BarcaPass;
-            BarsaAddress = Properties.Settings.Default?.BarsaAddress;
-        }
-
         private void StartNancyApi()
         {
             var port = 5656;
@@ -122,22 +127,54 @@ namespace SIPWindowsAgent
 
         private void RegisterAccount()
         {
-            var userName = Properties.Settings.Default.Username;
-            var displayName = Properties.Settings.Default.Username;
-            var authenticationId = Properties.Settings.Default.Username;
-            var registerPassword = Properties.Settings.Default.Password;
-            var domainHost = Properties.Settings.Default.SIPServerAddressTextBox;
-            var domainPort = Properties.Settings.Default.SIPServerPortTextBox;
-            if (userName != "" && registerPassword != "" && domainHost != "" && domainPort != 0)
+            config = settingsManager.LoadSettings();
+            CouplePhone = config.CouplePhone;
+            IsTransferEnabled = config.IsTransferEnabled;
+            BarsaAddress = config.BarsaAddress;
+            userToken = config.UserToken;
+            foreach (var kvp in config.SipSettings)
             {
-                UpdateLog("Registering ... ");
-                sipService.RegisterAccount(userName, displayName, authenticationId, registerPassword, domainHost, domainPort);
+                string sipAccount = kvp.Key;
+                SipSettings sipSettings = kvp.Value;
+
+                if (int.TryParse(sipSettings.DomainPort, out int domainPort))
+                {
+                    if (sipSettings.RegistrableOnClient)
+                    {
+                        sipService.RegisterAccount(
+                            sipSettings.UserName,
+                            sipSettings.DisplayName,
+                            sipSettings.AuthenticationId,
+                            sipSettings.RegisterPassword,
+                            sipSettings.DomainHost,
+                            domainPort 
+                        );
+                    }
+                }
             }
+
+
+            //foreach (var userSettings in appConfig?.SipSettings?.Values)
+            //{
+            //    var userName = Properties.Settings.Default.Username;
+            //}
+            //var userName = Properties.Settings.Default.Username;
+            //var displayName = Properties.Settings.Default.Username;
+            //var authenticationId = Properties.Settings.Default.Username;
+            //var registerPassword = Properties.Settings.Default.Password;
+            //var domainHost = Properties.Settings.Default.SIPServerAddressTextBox;
+            //var domainPort = Properties.Settings.Default.SIPServerPortTextBox;
+            //if (userName != "" && registerPassword != "" && domainHost != "" && domainPort != 0)
+            //{
+            //    UpdateLog("Registering ... ");
+            //    sipService.RegisterAccount(userName, displayName, authenticationId, registerPassword, domainHost, domainPort);
+            //}
 
         }
 
-        public async void CreatCallFromApi(string Number)
+        public void CreatCallFromApi(string Number)
         {
+            string targetNumber;
 
             if (txtCallNumber.InvokeRequired)
             {
@@ -145,16 +182,71 @@ namespace SIPWindowsAgent
             }
             else
             {
-                string Token= await sipService.CallTokenAPI();
-                callerData= await sipService.CallGetCallerInfoApi(Token, Number);
-                txtCallNumber.Text = callerData.Number;
+                if (Number.StartsWith("$"))
+                {
+                    targetNumber = Number.Substring(1);
+                    txtCallNumber.Text = targetNumber;
+                    //ShowingOutGoingCallForm(targetNumber, sipService, userToken);
+                }
+                else
+                {
+                    txtCallNumber.Text = Number;
+                    string accountPrifix = "";
+                    if (config.SipSettings.ContainsKey(selectedSipAccount))
+                    {
+                        accountPrifix = config.SipSettings[selectedSipAccount].OutGoingCallPrefix;
+                    }
+                    targetNumber = accountPrifix + Number;
+
+                    txtCallNumber.Text = targetNumber;
+                    //ShowingOutGoingCallForm(Number, sipService, userToken);
+
+                }
                 btnCall.PerformClick();
             }
         }
-
-        public void CreateCall(object sender, EventArgs e)
+        public void ShowingOutGoingCallForm(string number, SIPService sipService, string token)
         {
-            sipService.CreateCall(txtCallNumber.Text, callerData);
+            var payload = new
+            {
+                CallerId = number
+            };
+            callerData = apiServiceHelper.MakeApiCall<List<CallerData>>(BarsaAddress, "GetCallerInfo", payload, userToken).Result;
+            OutGoingCall = new OutgoingCallForm(number, callerData, sipService, token);
+            SIPService.ShowNotifyWindow(OutGoingCall);
+        }
+
+        public async void CreateCall(object sender, EventArgs e)
+        {
+            string phoneNumber = txtCallNumber.Text;
+            string acctualPhoneNumber=phoneNumber;
+            if (phoneNumber.StartsWith("9"))
+            {
+                 acctualPhoneNumber = phoneNumber.Substring(1);
+            }
+            ShowingOutGoingCallForm(acctualPhoneNumber, sipService, userToken);
+
+
+            if (string.IsNullOrEmpty(phoneNumber))
+            {
+                Console.WriteLine("Phone number cannot be null or empty.");
+                MessageBox.Show("Phone number cannot be null or empty.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            }
+            else
+            {
+                string pattern = @"^\d+$";
+                if (Regex.IsMatch(phoneNumber, pattern))
+                {
+                    sipService.CreateCall(phoneNumber);
+                }
+                else
+                {
+                    Console.WriteLine("Invalid phone number format.");
+                    MessageBox.Show("Invalid phone number format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
         }
         private void DropCall(object sender, EventArgs e)
         {
@@ -171,18 +263,34 @@ namespace SIPWindowsAgent
             sipService.RejectCall();
 
         }
+        internal void CallCompleted()
+        {
+            if (OutGoingCall != null && OutGoingCall.IsHandleCreated)
+            {
+                // Check if the form's handle has been created
+                OutGoingCall.Invoke(new Action(() =>
+                {
+                    OutGoingCall.btnDropCall.Enabled = false;
+                }));
+            }
+        }
+
 
         public void UpdateLog(string message)
         {
-            if (txtLog.InvokeRequired)
+            if (!IsDisposed && txtLog != null && !txtLog.IsDisposed)
             {
-                txtLog.Invoke(new Action(() => UpdateLog(message)));
-            }
-            else
-            {
-                txtLog.AppendText(message + Environment.NewLine);
+                if (txtLog.InvokeRequired)
+                {
+                    txtLog.Invoke(new Action(() => UpdateLog(message)));
+                }
+                else
+                {
+                    txtLog.AppendText(message + Environment.NewLine);
+                }
             }
         }
+
 
         //internal void Incomingcall(string callerIDAsCaller)
         //{
@@ -251,7 +359,7 @@ namespace SIPWindowsAgent
 
         private void SettingButton_Click(object sender, EventArgs e)
         {
-            SettingsForm settingsForm = new SettingsForm(sipService, this, false);
+            SettingsForm settingsForm = new SettingsForm(sipService, this, false, apiServiceHelper);
             settingsForm.ShowDialog();
         }
 
@@ -267,12 +375,68 @@ namespace SIPWindowsAgent
 
         private void button1_Click(object sender, EventArgs e)
         {
-            SettingsForm settingsForm = new SettingsForm(sipService, this, true);
+
             settingsForm.ShowDialog();
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+
+        }
+        public void getRightSettingForIncominCall(string number)
+        {
+            settingsForm = new SettingsForm(sipService, this, true, apiServiceHelper);
+            settingsForm.getRightSettingForIncominCall(number);
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            txtCallNumber.Text += 8;
+        }
+
+        private void button4_Click_1(object sender, EventArgs e)
+        {
+            txtCallNumber.Text += 1;
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            txtCallNumber.Text += 2;
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            txtCallNumber.Text += 3;
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            txtCallNumber.Text += 4;
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            txtCallNumber.Text += 5;
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            txtCallNumber.Text += 6;
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            txtCallNumber.Text += 7;
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            txtCallNumber.Text += 9;
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            txtCallNumber.Text += 0;
         }
     }
 }

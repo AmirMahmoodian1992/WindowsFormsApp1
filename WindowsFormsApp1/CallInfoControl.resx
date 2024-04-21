@@ -126,17 +126,14 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="txtType.Location" type="System.Drawing.Point, System.Drawing">
-    <value>271, 14</value>
+    <value>262, 5</value>
   </data>
   <data name="txtType.Size" type="System.Drawing.Size, System.Drawing">
-    <value>117, 23</value>
+    <value>139, 23</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="txtType.TabIndex" type="System.Int32, mscorlib">
     <value>19</value>
-  </data>
-  <data name="txtType.Text" xml:space="preserve">
-    <value>مشتری</value>
   </data>
   <data name="&gt;&gt;txtType.Name" xml:space="preserve">
     <value>txtType</value>
@@ -148,7 +145,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;txtType.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>2</value>
   </data>
   <data name="ctlLayout.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
@@ -157,13 +154,13 @@
     <value>2</value>
   </data>
   <data name="ctlLayout.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 74</value>
+    <value>3, 33</value>
   </data>
   <data name="ctlLayout.RowCount" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
   <data name="ctlLayout.Size" type="System.Drawing.Size, System.Drawing">
-    <value>380, 145</value>
+    <value>375, 189</value>
   </data>
   <data name="ctlLayout.TabIndex" type="System.Int32, mscorlib">
     <value>28</value>
@@ -178,10 +175,10 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;ctlLayout.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>1</value>
   </data>
   <data name="ctlLayout.LayoutSettings" type="System.Windows.Forms.TableLayoutSettings, System.Windows.Forms">
-    <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls /&gt;&lt;Columns Styles="Percent,33.76206,Percent,66.23795" /&gt;&lt;Rows Styles="Percent,78.78788" /&gt;&lt;/TableLayoutSettings&gt;</value>
+    <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls /&gt;&lt;Columns Styles="Percent,49.49749,Percent,50.50251" /&gt;&lt;Rows Styles="Percent,78.78788" /&gt;&lt;/TableLayoutSettings&gt;</value>
   </data>
   <data name="linkMain.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
@@ -190,16 +187,13 @@
     <value>NoControl</value>
   </data>
   <data name="linkMain.Location" type="System.Drawing.Point, System.Drawing">
-    <value>80, 39</value>
+    <value>58, 7</value>
   </data>
   <data name="linkMain.Size" type="System.Drawing.Size, System.Drawing">
-    <value>308, 20</value>
+    <value>198, 20</value>
   </data>
   <data name="linkMain.TabIndex" type="System.Int32, mscorlib">
     <value>30</value>
-  </data>
-  <data name="linkMain.Text" xml:space="preserve">
-    <value>linkLabel1</value>
   </data>
   <data name="&gt;&gt;linkMain.Name" xml:space="preserve">
     <value>linkMain</value>
@@ -213,76 +207,13 @@
   <data name="&gt;&gt;linkMain.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="txtCallerNumber.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Left, Right</value>
-  </data>
-  <data name="txtCallerNumber.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 12pt</value>
-  </data>
-  <data name="txtCallerNumber.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="txtCallerNumber.Location" type="System.Drawing.Point, System.Drawing">
-    <value>80, 14</value>
-  </data>
-  <data name="txtCallerNumber.Size" type="System.Drawing.Size, System.Drawing">
-    <value>173, 20</value>
-  </data>
-  <data name="txtCallerNumber.TabIndex" type="System.Int32, mscorlib">
-    <value>25</value>
-  </data>
-  <data name="txtCallerNumber.Text" xml:space="preserve">
-    <value>0912705545</value>
-  </data>
-  <data name="&gt;&gt;txtCallerNumber.Name" xml:space="preserve">
-    <value>txtCallerNumber</value>
-  </data>
-  <data name="&gt;&gt;txtCallerNumber.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txtCallerNumber.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;txtCallerNumber.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="txtLog.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left, Right</value>
-  </data>
-  <data name="txtLog.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 225</value>
-  </data>
-  <data name="txtLog.Multiline" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="txtLog.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
-    <value>No</value>
-  </data>
-  <data name="txtLog.Size" type="System.Drawing.Size, System.Drawing">
-    <value>380, 54</value>
-  </data>
-  <data name="txtLog.TabIndex" type="System.Int32, mscorlib">
-    <value>29</value>
-  </data>
-  <data name="&gt;&gt;txtLog.Name" xml:space="preserve">
-    <value>txtLog</value>
-  </data>
-  <data name="&gt;&gt;txtLog.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txtLog.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;txtLog.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
   <data name="ctlImage.AccessibleName" xml:space="preserve">
     <value>CallerPicture</value>
   </data>
-  <data name="ctlImage.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="ctlImage.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        DAAACwwBP0AiyAAAAbNJREFUaEPt2N0qbWEYhuHpP7KxNpTDESlKkRVyBM5ASsgW9hwEtrROxN5itfzk
+        EQAACxEBf2RfkQAAAbNJREFUaEPt2N0qbWEYhuHpP7KxNpTDESlKkRVyBM5ASsgW9hwEtrROxN5itfzk
         /wQIm2Ldb1ll45nDmN83eF817rpKTN98JiZjatTVfZ+6MINdHOMJj29v2/vsY3ab0E3hDK8fsNvYbcPV
         jk2o0c28YAP2uWFq9UG8Zw8mRPYjYl9dNbIM+9xJuGZP2jLPiY9coBtu2W8gNSyFneXWHtSoFDtw6xRq
         VIoTuGV/6NSoFHaWW2pQDrfUmBxuqTE53FJjcrilxuRwS43J4dY91KAUdpZbh1CjUvyGW/aKT41K4XqJ
@@ -292,14 +223,17 @@
         wT5K9xfqkAj+oHQPUIdEYNtKpw6IpK6urqUajX+w1ZzEmyMMbAAAAABJRU5ErkJggg==
 </value>
   </data>
+  <data name="ctlImage.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
+    <value>Stretch</value>
+  </data>
   <data name="ctlImage.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
   <data name="ctlImage.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 9</value>
+    <value>3, 3</value>
   </data>
   <data name="ctlImage.Size" type="System.Drawing.Size, System.Drawing">
-    <value>62, 59</value>
+    <value>39, 27</value>
   </data>
   <data name="ctlImage.TabIndex" type="System.Int32, mscorlib">
     <value>18</value>
@@ -314,7 +248,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;ctlImage.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>3</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -335,7 +269,7 @@
     <value>Yes</value>
   </data>
   <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
-    <value>404, 282</value>
+    <value>404, 225</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>CallInfoControl</value>

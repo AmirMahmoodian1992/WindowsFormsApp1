@@ -126,7 +126,7 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="btnAnswer.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 247</value>
+    <value>5, 280</value>
   </data>
   <data name="btnAnswer.Size" type="System.Drawing.Size, System.Drawing">
     <value>105, 23</value>
@@ -157,7 +157,7 @@
     <value>NoControl</value>
   </data>
   <data name="btnDrop.Location" type="System.Drawing.Point, System.Drawing">
-    <value>123, 247</value>
+    <value>116, 280</value>
   </data>
   <data name="btnDrop.Size" type="System.Drawing.Size, System.Drawing">
     <value>105, 23</value>
@@ -180,34 +180,37 @@
   <data name="&gt;&gt;btnDrop.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="ctlCallInfo.Font" type="System.Drawing.Font, System.Drawing">
+  <data name="ctlCallInfoList.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="ctlCallInfoList.Font" type="System.Drawing.Font, System.Drawing">
     <value>Tahoma, 8.25pt</value>
   </data>
-  <data name="ctlCallInfo.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+  <data name="ctlCallInfoList.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="ctlCallInfo.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 12</value>
+  <data name="ctlCallInfoList.Location" type="System.Drawing.Point, System.Drawing">
+    <value>5, 6</value>
   </data>
-  <data name="ctlCallInfo.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
+  <data name="ctlCallInfoList.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
     <value>Yes</value>
   </data>
-  <data name="ctlCallInfo.Size" type="System.Drawing.Size, System.Drawing">
-    <value>380, 229</value>
+  <data name="ctlCallInfoList.Size" type="System.Drawing.Size, System.Drawing">
+    <value>387, 269</value>
   </data>
-  <data name="ctlCallInfo.TabIndex" type="System.Int32, mscorlib">
-    <value>28</value>
+  <data name="ctlCallInfoList.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
-  <data name="&gt;&gt;ctlCallInfo.Name" xml:space="preserve">
-    <value>ctlCallInfo</value>
+  <data name="&gt;&gt;ctlCallInfoList.Name" xml:space="preserve">
+    <value>ctlCallInfoList</value>
   </data>
-  <data name="&gt;&gt;ctlCallInfo.Type" xml:space="preserve">
-    <value>SIPWindowsAgent.CallInfoControl, SIPWindowsAgent, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;ctlCallInfoList.Type" xml:space="preserve">
+    <value>SIPWindowsAgent.CallInfoListControl, SIPWindowsAgent, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;ctlCallInfo.Parent" xml:space="preserve">
+  <data name="&gt;&gt;ctlCallInfoList.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;ctlCallInfo.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;ctlCallInfoList.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -217,10 +220,75 @@
     <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>404, 282</value>
+    <value>398, 306</value>
   </data>
   <data name="$this.Font" type="System.Drawing.Font, System.Drawing">
     <value>Tahoma, 8.25pt</value>
+  </data>
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAIAGBgAAAEAIACICQAAJgAAABAQAAABACAAaAQAAK4JAAAoAAAAGAAAADAAAAABACAAAAAAAAAJ
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhKxKEYSs
+        SqeFrUv6hKxK/oSsSv6FrUv/hKxK/oWtS/+ErEr+hKxK/oSsSv6FrUv/hKxK/oWtS/+ErEr+hKxK/oWt
+        S/+ErEr+hKxK/oWtS/+ErEr5hKxKoIWtSw0AAAAAhKxKrYSsSv6FrUv/hKxK/oSsSv6FrUv/hKxK/oWt
+        S/+ErEr+hKxK/oSsSv6FrUv/hKxK/oWtS/+ErEr+hKxK/oWtS/+ErEr+hKxK/oWtS/+ErEr+hKxK/oWt
+        S6IAAAAAha1L/YWtS/+FrUv/ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv/ha1L/4Wt
+        S/+FrUv/ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv/ha1L/4WtS/oAAAAAhKxK/oSsSv6FrUv/hKxK/oSs
+        Sv6FrUv/hKxK/oWtS/+ErEr+hKxK/oSsSv6FrUv/hKxK/oWtS/+ErEr+hKxK/oWtS/+ErEr+hKxK/oWt
+        S/+ErEr+hKxK/oWtS/8AAAAAhKxK/oSsSv6FrUv/hKxK/oSsSv6FrUv/hKxK/oWtS/+ErEr+hKxK/oSs
+        Sv6FrUv/hKxK/oWtS/+ErEr+hKxK/oWtS/+ErEr+hKxK/oWtS/+ErEr+hKxK/oWtS/8AAAAAha1L/4Wt
+        S/+FrUv/hKxK/4SsSv+ErEr/hKxK/4SsSv+ErEr/ha1L//////////////////////+FrUv/hKxL/4Ss
+        S/+ErEr/hKxK/4WtS/+FrUv/ha1L/4WtS/8AAAAAhKxK/oSsSv6FrUv/hKxK/4SsSv+ErEr/ha1L/4Wt
+        S/+FrUv//////////////////////4WtS/+FrUv/ha1L/4WtS/+FrUv/hKxK/4WtS/+ErEr+hKxK/oWt
+        S/8AAAAAhKxK/oSsSv6FrUv/hKxK/4SsSv+ErEr/ha1L/4WtS///////////////////////irBS/4Wt
+        S/+FrUv/ha1L/4WtS/+FrUv/hKxK/4WtS/+ErEr+hKxK/oWtS/8AAAAAha1L/4WtS/+FrUv/hKxK/4Ss
+        Sv+ErEr/ha1L//////////////////////+KsFP/ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv/hKxK/4Wt
+        S/+FrUv/ha1L/4WtS/8AAAAAhKxK/oSsSv6FrUv/hKxK/4SsSv+ErEr//////////////////////4ux
+        VP+FrUv/ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv/hKxK/4WtS/+ErEr+hKxK/oWtS/8AAAAAhKxK/oSs
+        Sv6FrUv/hKxK/4SsSv///////////////////////////////////////////////////////f38//39
+        /P/9/fz//////4WtS/+ErEr+hKxK/oWtS/8AAAAAhKxK/oSsSv6FrUv/hKxK////////////////////
+        /////////////////////////////////////////f38//39/P/9/fz//////4WtS/+ErEr+hKxK/oWt
+        S/8AAAAAha1L/4WtS/+FrUv/hKxK/4SsSv//////////////////////////////////////////////
+        /////////f38//39/P/9/fz//////4WtS/+FrUv/ha1L/4WtS/8AAAAAhKxK/oSsSv6FrUv/hKxK/4Ss
+        Sv+ErEr//////////////////////4uxVP+FrUv/ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv/hKxK/4Wt
+        S/+ErEr+hKxK/oWtS/8AAAAAha1L/4WtS/+FrUv/hKxK/4SsSv+ErEr/ha1L////////////////////
+        //+KsFP/ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv/hKxK/4WtS/+FrUv/ha1L/4WtS/8AAAAAhKxK/oSs
+        Sv6FrUv/hKxK/4SsSv+ErEr/ha1L/4WtS///////////////////////irBT/4WtS/+FrUv/ha1L/4Wt
+        S/+FrUv/hKxK/4WtS/+ErEr+hKxK/oWtS/8AAAAAhKxK/oSsSv6FrUv/hKxK/4SsSv+ErEr/ha1L/4Wt
+        S/+FrUv//////////////////////4WtS/+FrUv/ha1L/4WtS/+FrUv/hKxK/4WtS/+ErEr+hKxK/oWt
+        S/8AAAAAha1L/4WtS/+FrUv/hKxK/4SsSv+ErEr/hKxK/4SsSv+ErEr/ha1L////////////////////
+        //+FrUv/hKxL/4SsS/+ErEr/hKxK/4WtS/+FrUv/ha1L/4WtS/8AAAAAhKxK/oSsSv6FrUv/hKxK/oSs
+        Sv+ErEr/hKxK/4SsSv+ErEr/ha1L/4SsS/+ErEv/hKxL/4SsS/+ErEv/hKxL/4SsS/+ErEr/hKxK/4Wt
+        S/+ErEr+hKxK/oWtS/8AAAAAha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv/ha1L/4Wt
+        S/+FrUv/ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv/ha1L/4WtS/8AAAAAhKxK/oSs
+        Sv6FrUv/hKxK/oSsSv6FrUv/hKxK/oWtS/+ErEr+hKxK/oSsSv6FrUv/hKxK/oWtS/+ErEr+hKxK/oWt
+        S/+ErEr+hKxK/oWtS/+ErEr+hKxK/oWtS/sAAAAAhKxKtYSsSv6FrUv/hKxK/oSsSv6FrUv/hKxK/oWt
+        S/+ErEr+hKxK/oSsSv6FrUv/hKxK/oWtS/+ErEr+hKxK/oWtS/+ErEr+hKxK/oWtS/+ErEr+hKxK/oWt
+        S6kAAAAAha1LFYWtS7SFrUv9ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv/ha1L/4Wt
+        S/+FrUv/ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv8ha1LrYWtSxEAAAAA////AAAAAQAAAAEAAAABAAAA
+        AQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAA
+        AQAAAAEAAAABAAAAAQAAAAEAKAAAABAAAAAgAAAAAQAgAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAISs
+        SgyFrUtphKxKf4WtS4CErEp/ha1LgISsSn+FrUuAhKxKf4WtS4CErEp/ha1LgISsSn+FrUt+hKxKT4Wt
+        SwSErEquha1L/YSsSv6FrUv/hKxK/oWtS/+ErEr+ha1L/4SsSv6FrUv/hKxK/oWtS/+ErEr+ha1L/4Ss
+        SvaFrUtQha1L/oWtS/+FrUv/ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv/ha1L/4Wt
+        S/+FrUv/ha1Lf4SsSv6FrUv/hKxK/oWtS/+ErEr+ha1L/4SsSv6KsVP/ibBS/oivT/+ErEr+ha1L/4Ss
+        Sv6FrUv/hKxK/oWtS4CFrUv/ha1L/4SsSv+ErEr/ha1L/4WtS//C1qX///////39+/+kwnj/ha1L/4Wt
+        S/+ErEr/ha1L/4WtS/+FrUuAhKxK/oWtS/+ErEr/hKxK/4WtS//C1qX///////z9+/+Ttl//ha1L/4Wt
+        S/+FrUv/hKxK/4WtS/+ErEr+ha1LgIWtS/+FrUv/hKxK/4SsSv/C1qX///////3+/P+nxH3/ha1L/4Wt
+        S/+FrUv/ha1L/4SsSv+FrUv/ha1L/4WtS4CErEr+ha1L/4SsSv/C1qX/////////////////+vz3//r7
+        9//6+/f/+Pr0//j69P/1+O//ha1L/4SsSv6FrUuAha1L/4WtS/+Hrk7/4evS////////////////////
+        //////////////39/P/9/fz/+vv3/4WtS/+FrUv/ha1LgISsSv6FrUv/hKxK/4euTv/1+PD///////r8
+        +f+QtFv/irFT/4qxU/+KsFP/irBT/4mvUv+FrUv/hKxK/oWtS4CFrUv/ha1L/4SsSv+ErEr/iK9P/+Hr
+        0v//////4uzU/4qwU/+FrUv/ha1L/4WtS/+ErEr/ha1L/4WtS/+FrUuAhKxK/oWtS/+ErEr/hKxK/4Wt
+        S/+Ir0//9fjw///////2+PH/iK9P/4WtS/+FrUv/hKxK/4WtS/+ErEr+ha1LgIWtS/+FrUv/hKxK/4Ss
+        Sv+ErEr/hKxK/4ivT//C1qX/wtal/6PBeP+ErEv/hKxL/4SsSv+FrUv/ha1L/4WtS4CFrUv/ha1L/4Wt
+        S/+FrUv/ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUuAhKxK24Wt
+        S/+ErEr+ha1L/4SsSv6FrUv/hKxK/oWtS/+ErEr+ha1L/4SsSv6FrUv/hKxK/oWtS/+ErEr8ha1LaoWt
+        SyOFrUvbha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv/ha1L/4WtS/+FrUv+ha1LroWt
+        SwwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAA
+</value>
   </data>
   <data name="$this.Location" type="System.Drawing.Point, System.Drawing">
     <value>200, 200</value>

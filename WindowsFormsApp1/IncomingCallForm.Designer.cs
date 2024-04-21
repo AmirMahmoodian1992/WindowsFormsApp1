@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(IncomingCallForm));
             this.btnAnswer = new System.Windows.Forms.Button();
             this.btnDrop = new System.Windows.Forms.Button();
-            this.ctlCallInfo = new SIPWindowsAgent.CallInfoControl();
+            this.ctlCallInfoList = new SIPWindowsAgent.CallInfoListControl();
             this.SuspendLayout();
             // 
             // btnAnswer
@@ -48,21 +48,22 @@
             this.btnDrop.UseVisualStyleBackColor = true;
             this.btnDrop.Click += new System.EventHandler(this.button3_Click);
             // 
-            // ctlCallInfo
+            // ctlCallInfoList
             // 
-            this.ctlCallInfo.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
-            resources.ApplyResources(this.ctlCallInfo, "ctlCallInfo");
-            this.ctlCallInfo.Name = "ctlCallInfo";
+            resources.ApplyResources(this.ctlCallInfoList, "ctlCallInfoList");
+            this.ctlCallInfoList.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
+            this.ctlCallInfoList.Name = "ctlCallInfoList";
             // 
             // IncomingCallForm
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
-            this.Controls.Add(this.ctlCallInfo);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(225)))), ((int)(((byte)(200)))));
+            this.Controls.Add(this.ctlCallInfoList);
             this.Controls.Add(this.btnAnswer);
             this.Controls.Add(this.btnDrop);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.Name = "IncomingCallForm";
@@ -76,6 +77,6 @@
         #endregion
         public System.Windows.Forms.Button btnAnswer;
         public System.Windows.Forms.Button btnDrop;
-        public CallInfoControl ctlCallInfo;
+        public CallInfoListControl ctlCallInfoList;
     }
 }

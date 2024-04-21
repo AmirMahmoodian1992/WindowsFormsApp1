@@ -1,6 +1,6 @@
 ﻿namespace SIPWindowsAgent
 {
-    partial class CallInfoControl
+    partial class CallInfoListControl
     {
         /// <summary>
         /// Required designer variable.
@@ -29,55 +29,45 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CallInfoControl));
-            this.txtType = new System.Windows.Forms.Label();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CallInfoListControl));
             this.ctlLayout = new System.Windows.Forms.TableLayoutPanel();
-            this.linkMain = new System.Windows.Forms.LinkLabel();
-            this.ctlImage = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.ctlImage)).BeginInit();
+            this.txtCallerNumber = new System.Windows.Forms.Label();
+            this.lblInfo = new System.Windows.Forms.Label();
             this.SuspendLayout();
-            // 
-            // txtType
-            // 
-            resources.ApplyResources(this.txtType, "txtType");
-            this.txtType.Name = "txtType";
             // 
             // ctlLayout
             // 
             resources.ApplyResources(this.ctlLayout, "ctlLayout");
             this.ctlLayout.Name = "ctlLayout";
             // 
-            // linkMain
+            // txtCallerNumber
             // 
-            resources.ApplyResources(this.linkMain, "linkMain");
-            this.linkMain.Name = "linkMain";
+            resources.ApplyResources(this.txtCallerNumber, "txtCallerNumber");
+            this.txtCallerNumber.ForeColor = System.Drawing.Color.Black;
+            this.txtCallerNumber.Name = "txtCallerNumber";
             // 
-            // ctlImage
+            // lblInfo
             // 
-            resources.ApplyResources(this.ctlImage, "ctlImage");
-            this.ctlImage.Name = "ctlImage";
-            this.ctlImage.TabStop = false;
-            this.ctlImage.Tag = "Picture";
+            resources.ApplyResources(this.lblInfo, "lblInfo");
+            this.lblInfo.ForeColor = System.Drawing.Color.Black;
+            this.lblInfo.Name = "lblInfo";
             // 
-            // CallInfoControl
+            // CallInfoListControl
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
-            this.Controls.Add(this.linkMain);
+            this.Controls.Add(this.lblInfo);
+            this.Controls.Add(this.txtCallerNumber);
             this.Controls.Add(this.ctlLayout);
-            this.Controls.Add(this.txtType);
-            this.Controls.Add(this.ctlImage);
-            this.Name = "CallInfoControl";
-            ((System.ComponentModel.ISupportInitialize)(this.ctlImage)).EndInit();
+            this.Name = "CallInfoListControl";
             this.ResumeLayout(false);
 
         }
         
         #endregion
-        private System.Windows.Forms.PictureBox ctlImage;
-        private System.Windows.Forms.Label txtType;
         private System.Windows.Forms.TableLayoutPanel ctlLayout;
-        private System.Windows.Forms.LinkLabel linkMain;
+        private System.Windows.Forms.Label txtCallerNumber;
+        private System.Windows.Forms.Label lblInfo;
     }
 }

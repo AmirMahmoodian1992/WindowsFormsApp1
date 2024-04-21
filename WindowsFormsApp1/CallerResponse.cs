@@ -27,6 +27,11 @@ namespace SIPWindowsAgent
         {
             get; set;
         }
+        public string CustomScript
+        {
+            get; set;
+        }
+
     }
 
     public class CallerData
@@ -36,11 +41,15 @@ namespace SIPWindowsAgent
             Items = new List<CallerDataItem>();
         }
         //		icon
-        public string Type
+        //		public string Receiver
+        //		{
+        //			get; set;
+        //		}
+        public string Label
         {
             get; set;
         }
-        public string Title
+        public string Text
         {
             get; set;
         }
@@ -53,6 +62,10 @@ namespace SIPWindowsAgent
             get; set;
         }
         public List<CallerDataItem> Items
+        {
+            get; set;
+        }
+        public string CustomScript
         {
             get; set;
         }

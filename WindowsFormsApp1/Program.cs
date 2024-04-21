@@ -59,13 +59,13 @@ namespace SIPWindowsAgent
             //Application.Run();
         }
 
-        private static void TestForm()
-        {
-            var form = new IncomingCallForm();
-            var data = CallInfoControl.GetTestData();
-            form.ShowData(data, "0912657575", true, id => MessageBox.Show("Open " + id));
-            form.Show();
-            Application.Run(form);
-        }
+        //private static void TestForm()
+        //{
+        //    var form = new IncomingCallForm();
+        //    var data = CallInfoControl.GetTestData();
+        //    //form.ShowData(data, "0912657575", true, id => MessageBox.Show("Open " + id));
+        //    form.Show();
+        //    Application.Run(form);
+        //}
     }
 }

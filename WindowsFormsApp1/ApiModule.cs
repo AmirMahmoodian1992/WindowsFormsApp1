@@ -35,14 +35,13 @@ public class CustomBootstrapper : DefaultNancyBootstrapper
     {
         base.ApplicationStartup(container, pipelines);
 
-        // Enable CORS for all routes
         pipelines.AfterRequest.AddItemToEndOfPipeline(ctx =>
         {
-            // Replace 'http://localhost:4172' with the actual origin of your client application
-            ctx.Response.WithHeader("Access-Control-Allow-Origin", "http://localhost:4172")
+            ctx.Response.WithHeader("Access-Control-Allow-Origin", "http://localhost:4175")
                         .WithHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
                         .WithHeader("Access-Control-Allow-Headers", "Accept, Origin, Content-type")
                         .WithHeader("Access-Control-Allow-Credentials", "true");
+            
         });
         pipelines.AfterRequest.AddItemToEndOfPipeline(ctx =>
         {

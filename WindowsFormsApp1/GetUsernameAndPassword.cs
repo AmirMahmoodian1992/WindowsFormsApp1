@@ -48,6 +48,13 @@ namespace SIPWindowsAgent
                 settingForm.UserTokenTextBox.Text = tokenResponse.Token;
                 Close();
             }
+            else
+            {
+                if (tokenResponse.ErrorMessage != null)
+                {
+                    MessageBox.Show(tokenResponse.ErrorMessage);
+                }
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)

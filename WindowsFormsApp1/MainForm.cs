@@ -216,37 +216,45 @@ namespace SIPWindowsAgent
             SIPService.ShowNotifyWindow(OutGoingCall);
         }
 
-        public async void CreateCall(object sender, EventArgs e)
+        public void CreateCall(object sender, EventArgs e)
         {
             string phoneNumber = txtCallNumber.Text;
-            string acctualPhoneNumber=phoneNumber;
+
+            if (string.IsNullOrWhiteSpace(phoneNumber))
+            {
+                DisplayError("Phone Number Cannot Be Null Or Empty.");
+                return;
+            }
+
+            if (!IsValidPhoneNumber(phoneNumber))
+            {
+                DisplayError("Invalid Phone Number Format.");
+                return;
+            }
+
+            string actualPhoneNumber = NormalizePhoneNumber(phoneNumber);
+            ShowingOutGoingCallForm(actualPhoneNumber, sipService, userToken);
+            sipService.CreateCall(phoneNumber);
+        }
+
+        private bool IsValidPhoneNumber(string phoneNumber)
+        {
+            return Regex.IsMatch(phoneNumber, @"^\d+$");
+        }
+
+        private string NormalizePhoneNumber(string phoneNumber)
+        {
             if (phoneNumber.StartsWith("9"))
             {
-                 acctualPhoneNumber = phoneNumber.Substring(1);
+                return phoneNumber.Substring(1);
             }
-            ShowingOutGoingCallForm(acctualPhoneNumber, sipService, userToken);
+            return phoneNumber;
+        }
 
-
-            if (string.IsNullOrEmpty(phoneNumber))
-            {
-                Console.WriteLine("Phone number cannot be null or empty.");
-                MessageBox.Show("Phone number cannot be null or empty.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-            }
-            else
-            {
-                string pattern = @"^\d+$";
-                if (Regex.IsMatch(phoneNumber, pattern))
-                {
-                    sipService.CreateCall(phoneNumber);
-                }
-                else
-                {
-                    Console.WriteLine("Invalid phone number format.");
-                    MessageBox.Show("Invalid phone number format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-
+        private void DisplayError(string errorMessage)
+        {
+            Console.WriteLine(errorMessage);
+            MessageBox.Show(errorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         private void DropCall(object sender, EventArgs e)
         {

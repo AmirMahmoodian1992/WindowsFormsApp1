@@ -22,7 +22,6 @@ namespace SIPWindowsAgent
             this.sIPService = SIPServic;
             settingsManager = new SettingsManager();
             InitializeComponent();
-            //btnLogin.Click += btnLogin_Click;
         }
 
         private void ShowPassord_Load(object sender, EventArgs e)

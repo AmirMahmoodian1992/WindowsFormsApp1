@@ -46,8 +46,7 @@ namespace SIPWindowsAgent
         }
         public void getRightSettingForIncominCall(string username)
         {
-            SettingsManager settingsManager = new SettingsManager();
-            AppConfig config = settingsManager.LoadSettings();
+            AppConfig config = SettingsManager.Instance.LoadSettings();
             foreach (var kvp in config.SipSettings)
             {
                 if (kvp.Value.UserName == username)
@@ -62,55 +61,35 @@ namespace SIPWindowsAgent
         }
         private void btnRegister_Click(object sender, EventArgs e)
         {
+
             //TODO do we need these ?
             frm.BarsaUser = BarcaUsername.Text;
             frm.BarsaPass = UserTokenTextBox.Text;
-            //frm.txtUsername.Text = txtUsername.Text;
-            //frm.txtPassword.Text = txtPassword.Text;
             frm.CouplePhone = CouplePhoneTextBox.Text;
             frm.IsTransferEnabled = TransferphoneCheckBox.Checked;
             frm.BarsaAddress = BarsaAddressTextBox.Text;
-
-
-            //UserName = txtUsername.Text;
-            //DisplayName = txtUsername.Text;
-            //AuthenticationId = txtUsername.Text;
-            //RegisterPassword = txtPassword.Text;
-            //DomainHost = SIPServerAddressTextBox.Text;
-
-            //Properties.Settings.Default.BarcaPass = BarcaPass.Text;
-            //Properties.Settings.Default.BarcaUsername = BarcaUsername.Text;
-            //Properties.Settings.Default.TransferphoneCheckBox = TransferphoneCheckBox.Checked;
-            //Properties.Settings.Default.SIPServerAddressTextBox = SIPServerAddressTextBox.Text;
-            //Properties.Settings.Default.SIPServerPortTextBox = DomainPort;
-            //Properties.Settings.Default.CouplePhone = CouplePhoneTextBox.Text;
-            //Properties.Settings.Default.Username = txtUsername.Text;
-            //Properties.Settings.Default.Password = txtPassword.Text;
-            //Properties.Settings.Default.BarsaAddress = BarsaAddressTextBox.Text;
-
-            // Sanitize BarcaUsername to create a valid setting key
-
-
-            SettingsManager settingsManager = new SettingsManager();
-            AppConfig appConfig = new AppConfig();
-            //appConfig.BarcaPass = BarcaPass.Text;
-            //appConfig.BarsaUserName = BarcaUsername.Text;
+            AppConfig appConfig = SettingsManager.Instance.LoadSettings();
+            appConfig.SipSettings.Clear();
             appConfig.BarsaAddress = BarsaAddressTextBox.Text;
             appConfig.IsTransferEnabled = TransferphoneCheckBox.Checked;
             appConfig.CouplePhone = CouplePhoneTextBox.Text;
+            if (int.TryParse(textBoxFormClosingInterval.Text, out int closingFormInterval))
+            {
+                appConfig.CloseFormInterval = closingFormInterval;
+            }
+            else
+            {
+                MessageBox.Show("Please Enter Time Interval In Right Format.");
+            }
             var userToken = UserTokenTextBox.Text;
             if (userToken != null)
             {
                 List<SipSettings> sipSettingsList = apiServiceHelper.MakeApiCall<List<SipSettings>>(BarsaAddressTextBox.Text, "GetSipSettings", null, userToken).Result;
-                //await sipService.GetSipSettingAsync(userToken, appConfig.BarsaAddress);
-
                 appConfig.UserToken = userToken;
                 frm.userToken = userToken;
                 appConfig.BarsaUserName = BarcaUsername.Text;
-
                 if (sipSettingsList != null)
                 {
-
                     foreach (var sipSettingsItems in sipSettingsList)
                     {
                         if (!appConfig.SipSettings.ContainsKey(sipSettingsItems.UserName))
@@ -125,26 +104,16 @@ namespace SIPWindowsAgent
                         }
                     }
                 }
-
-
-
-                AppConfig config = settingsManager.LoadSettings();
-
                 string username = BarcaUsername.Text;
-
-                if (!config.SipSettings.ContainsKey(username))
+                if (!appConfig.SipSettings.ContainsKey(username))
                 {
-                    config.SipSettings[username] = new SipSettings();
-
+                    appConfig.SipSettings[username] = new SipSettings();
                 }
-
-                settingsManager.SaveSettings(appConfig);
+                SettingsManager.Instance.SaveSettings(appConfig);
                 foreach (var kvp in appConfig.SipSettings)
                 {
                     string sipAccount = kvp.Key;
                     SipSettings sipSettings = kvp.Value;
-
-                    // Access properties of sipSettings and pass them to sipService.RegisterAccount method
                     if (int.TryParse(sipSettings.DomainPort, out int domainPort))
                     {
                         if (sipSettings.RegistrableOnClient)
@@ -155,7 +124,7 @@ namespace SIPWindowsAgent
                             sipSettings.AuthenticationId,
                             sipSettings.RegisterPassword,
                             sipSettings.DomainHost,
-                            domainPort // Use the converted domainPort
+                            domainPort
                         );
                         }
 
@@ -164,87 +133,20 @@ namespace SIPWindowsAgent
                 frm.LoadingSipAccountsInListBox();
             }
             Close();
-
-        }
-
-        private void couplePhone_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void BarsaPasslabel_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void BarsaUsernamelabel_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void BarcaPass_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void BarcaUsername_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtPassword_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtUsername_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
             FormBorderStyle = FormBorderStyle.FixedSingle;
-
-            //Properties.Settings.Default.Reload();
-            //BarcaPass.Text = Properties.Settings.Default.BarcaPass;
-            //BarcaUsername.Text = Properties.Settings.Default.BarcaUsername;
-            //TransferphoneCheckBox.Checked = Properties.Settings.Default.TransferphoneCheckBox;
-            //SIPServerAddressTextBox.Text = Properties.Settings.Default.SIPServerAddressTextBox;
-            //DomainPort = Properties.Settings.Default.SIPServerPortTextBox;
-            //CouplePhoneTextBox.Text = Properties.Settings.Default.CouplePhone;
-            //txtUsername.Text = Properties.Settings.Default.Username;
-            //txtPassword.Text = Properties.Settings.Default.Password;
-            //SIPServerPortTextBox.Text = Properties.Settings.Default.SIPServerPortTextBox.ToString();
-            //BarsaAddressTextBox.Text = Properties.Settings.Default.BarsaAddress;
             if (!NewFlag)
             {
-
-                SettingsManager settingsManager = new SettingsManager();
-                AppConfig config = settingsManager.LoadSettings();
-                //BarcaPass.Text = config.BarcaPass;
-                //BarcaUsername.Text = config.BarsaUserName;
+                AppConfig config = SettingsManager.Instance.LoadSettings();
                 TransferphoneCheckBox.Checked = config.IsTransferEnabled;
                 CouplePhoneTextBox.Text = config.CouplePhone;
                 BarsaAddressTextBox.Text = config.BarsaAddress;
                 BarcaUsername.Text = config.BarsaUserName;
                 UserTokenTextBox.Text = config.UserToken;
-
+                textBoxFormClosingInterval.Text = config.CloseFormInterval.ToString();
             }
             if (TransferphoneCheckBox.Checked)
             {
@@ -254,7 +156,6 @@ namespace SIPWindowsAgent
             {
                 CouplePhoneTextBox.Enabled = false;
             }
-
         }
 
         private void SIPServerPortTextBox_TextChanged(object sender, EventArgs e)

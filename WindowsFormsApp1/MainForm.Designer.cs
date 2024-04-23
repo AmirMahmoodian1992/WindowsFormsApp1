@@ -356,6 +356,7 @@
             // 
             // MainForm
             // 
+            this.AcceptButton = this.btnCall;
             this.AccessibleDescription = "DFG";
             this.AccessibleName = "DFGD";
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -374,7 +375,7 @@
             this.Name = "MainForm";
             this.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.Text = "ابزار مدیریت تماس ...";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);

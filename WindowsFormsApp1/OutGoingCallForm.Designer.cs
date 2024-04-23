@@ -28,10 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OutgoingCallForm));
             this.button2 = new System.Windows.Forms.Button();
             this.btnDropCall = new System.Windows.Forms.Button();
             this.ctlCallInfoList = new SIPWindowsAgent.CallInfoListControl();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // button2
@@ -73,6 +75,10 @@
             this.ctlCallInfoList.TabIndex = 39;
             this.ctlCallInfoList.Load += new System.EventHandler(this.ctlCallInfoList_Load);
             // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // OutgoingCallForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -84,6 +90,7 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.btnDropCall);
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MaximizeBox = false;
@@ -100,5 +107,6 @@
         public System.Windows.Forms.Button button2;
         public System.Windows.Forms.Button btnDropCall;
         public CallInfoListControl ctlCallInfoList;
+        private System.Windows.Forms.Timer timer1;
     }
 }

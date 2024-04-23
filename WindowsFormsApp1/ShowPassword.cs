@@ -22,17 +22,19 @@ namespace SIPWindowsAgent
             this.sIPService = SIPServic;
             settingsManager = new SettingsManager();
             InitializeComponent();
+            //btnLogin.Click += btnLogin_Click;
         }
 
         private void ShowPassord_Load(object sender, EventArgs e)
         {
             AppConfig config = settingsManager.LoadSettings();
             txtUserName.Text = config.BarsaUserName;
+            BeginInvoke(new Action(() => txtPassword.Focus()));
         }
 
-        private void btnLogin_Click(object sender, EventArgs e)
+        internal void BtnLogin_Click(object sender, EventArgs e)
         {
-            sIPService.RedirectAfterPass(txtPassword.Text);
+            sIPService.RedirectAfterPass(txtPassword.Text,txtUserName.Text);
             Close();
         }
 

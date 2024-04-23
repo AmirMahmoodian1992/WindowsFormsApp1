@@ -38,11 +38,25 @@ namespace SIPWindowsAgent
         public string UserToken { get; set; }
         public string CouplePhone { get; set; }
         public bool IsTransferEnabled { get; set; }
+        public int CloseFormInterval { get; set; } = 30;
+
         public Dictionary<string, SipSettings> SipSettings { get; set; } = new Dictionary<string, SipSettings>();
     }
 
     public class SettingsManager
     {
+        private static SettingsManager instance;
+        public static SettingsManager Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new SettingsManager();
+                }
+                return instance;
+            }
+        }
         private readonly string configFile = "config.json";
 
         public AppConfig LoadSettings()

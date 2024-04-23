@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System;
 using System.Windows.Forms;
+using System.Net;
 
 public class ApiServiceHelper
 {
@@ -11,6 +12,8 @@ public class ApiServiceHelper
     {
         using (var httpClient = new HttpClient())
         {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
             string Url = $"{apiUrl}/api2/incomingCall/0.1/{method}";
 
             try
@@ -23,11 +26,15 @@ public class ApiServiceHelper
                     httpClient.DefaultRequestHeaders.Add("UserCode", userToken);
                 }
                 HttpResponseMessage response = httpClient.SendAsync(req).Result;
-                //HttpResponseMessage response = client.SendAsync(req).Result;
-
+                
                 if (response.IsSuccessStatusCode)
                 {
                     var responseBody = await response.Content.ReadAsStringAsync();
+                    if (string.IsNullOrWhiteSpace(responseBody))
+                    {
+                        MessageBox.Show("Empty response received from the API.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return default(T);
+                    }
                     return JsonConvert.DeserializeObject<T>(responseBody);
                 }
                 else
@@ -38,8 +45,7 @@ public class ApiServiceHelper
             }
             catch (Exception ex)
             {
-                // Handle exceptions
-                Console.WriteLine($"Exception: {ex.Message}");
+                MessageBox.Show($"Exception: {ex.Message}");
                 return default(T);
             }
         }

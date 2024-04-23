@@ -1,4 +1,6 @@
-﻿namespace SIPWindowsAgent
+﻿using System.Windows.Forms;
+
+namespace SIPWindowsAgent
 {
     partial class CallInfoListControl
     {
@@ -30,7 +32,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CallInfoListControl));
-            this.ctlLayout = new System.Windows.Forms.TableLayoutPanel();
+            this.ctlLayout = new Panel();
             this.txtCallerNumber = new System.Windows.Forms.Label();
             this.lblInfo = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -51,6 +53,7 @@
             resources.ApplyResources(this.lblInfo, "lblInfo");
             this.lblInfo.ForeColor = System.Drawing.Color.Black;
             this.lblInfo.Name = "lblInfo";
+            this.lblInfo.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lblInfo_MouseClick);
             // 
             // CallInfoListControl
             // 
@@ -66,7 +69,7 @@
         }
         
         #endregion
-        private System.Windows.Forms.TableLayoutPanel ctlLayout;
+        private Panel ctlLayout;
         private System.Windows.Forms.Label txtCallerNumber;
         private System.Windows.Forms.Label lblInfo;
     }

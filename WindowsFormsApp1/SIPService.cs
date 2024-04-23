@@ -62,6 +62,11 @@ namespace sipservice
         private readonly ApiServiceHelper _apiHelper;
         public SIPService(MainForm form, ApiServiceHelper apiHelper)
         {
+            microphone = Microphone.GetDefaultDevice();
+            speaker = Speaker.GetDefaultDevice();
+            mediaSender = new PhoneCallAudioSender();
+            mediaReceiver = new PhoneCallAudioReceiver();
+            connector = new MediaConnector();
             _apiHelper = apiHelper;
             try
             {
@@ -78,11 +83,7 @@ namespace sipservice
             softphone = SoftPhoneFactory.CreateSoftPhone(MinPort, MaxPort);
 
             flage = false;
-            microphone = Microphone.GetDefaultDevice();
-            speaker = Speaker.GetDefaultDevice();
-            mediaSender = new PhoneCallAudioSender();
-            mediaReceiver = new PhoneCallAudioReceiver();
-            connector = new MediaConnector();
+
             try
             {
                 var registrationRequired = true;
@@ -243,7 +244,7 @@ namespace sipservice
         {
             var dialParams = new DialParameters(targetNumber);
             dialParams.CallType = CallType.Audio;
-            if (phoneLine == null)
+            if (phoneLine == null || phoneLine.RegState != RegState.RegistrationSucceeded)
                 MessageBox.Show($"First Register Your Sip Account", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
             {
@@ -322,6 +323,9 @@ namespace sipservice
         {
             try
             {
+
+                microphone = Microphone.GetDefaultDevice();
+                speaker = Speaker.GetDefaultDevice();
                 _conferenceRoom.ConnectReceiver(speaker);
                 _conferenceRoom.ConnectSender(microphone);
 
@@ -331,11 +335,8 @@ namespace sipservice
                 mediaSender.AttachToCall(call1);
                 mediaReceiver.AttachToCall(call1);
 
-                if (!(microphone == null || speaker == null))
-                {
-                    speaker.Start();
-                    microphone.Start();
-                }
+                microphone?.Start();
+                speaker?.Start();
             }
             catch (Exception ex)
             {
@@ -353,7 +354,7 @@ namespace sipservice
             {
                 incomingCallForm.UpdateLabelText(message);
             }
-            if (FormType == "OutGoingCallForm")// && OutGoingCall?.ctlCallInfoList?.txtLog != null)
+            if (FormType == "OutGoingCallForm")// && outgoingCallForm?.ctlCallInfoList?.txtLog != null)
             {
                 incomingCallForm.UpdateLabelText(message);
             }
@@ -746,33 +747,13 @@ namespace sipservice
             //client.BaseAddress = new Uri(apiUrl);
             try
             {
-
                 var payload = new
                 {
                     objectId = objectId != null ? objectId.ToString() : "0",
                     callNumber = callNumber != null ? callNumber : "0",
                     customScript = customScript != null ? customScript : ""
                 };
-
-
-
-                bool result = _apiHelper.MakeApiCall<bool>(form.BarsaAddress, "IncomingCallRedirection", payload, userToken).Result;
-
-
-                //HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, "IncomingCallRedirection");
-                //var stringContent = JsonConvert.SerializeObject(payload);
-                //req.Content = new StringContent(stringContent, System.Text.UTF8Encoding.UTF8, "application/json");
-
-                // HttpResponseMessage response = client.SendAsync(req).Result;
-
-                //if (response.IsSuccessStatusCode)
-                //{
-                //string responseBody = await response.Content.ReadAsStringAsync();
-
-                //var responseObj = JsonConvert.DeserializeAnonymousType(responseBody, new { output = false });
-
-                //bool result = responseObj.output;
-
+                bool result = _apiHelper.MakeApiCall<RedirectApiResponse>(form.BarsaAddress, "IncomingCallRedirection", payload, userToken).Result.Output;
                 var completedTask = await Task.Run(() => SynchronizationManager.Instance.WaitForFormShown(1500));
 
                 if (completedTask == true)
@@ -783,95 +764,77 @@ namespace sipservice
                 }
                 else
                 {
+
                     if (NumberOfTries == 0)
                     {
-                        ShowPassword PassForn = new ShowPassword(this);
-                        PassForn.Show();
-                        //string LoginCode = await CallGetLoginCodeApi(bearerToken, localIpAddress);
-                        //string urlToOpen = $"http://{form.BarsaAddress}/api/openid/callback?provider=AgentLogin&LoginCode={LoginCode}&url={HttpUtility.UrlEncode($"http://{form.BarsaAddress}")}";
-                        //Process.Start(urlToOpen);
+                        ShowPassword PassForm = new ShowPassword(this);
+                        PassForm.Show();
+                        PassForm.btnLogin.Click += async (sender, args) =>
+                        {
+                            await TryForShowingForm(callNumber, objectId, customScript);
+                        };
+
                     }
-                    NumberOfTries++;
-                    await Task.Delay(500);
-                    if (NumberOfTries <= 12)
+                    else
                     {
-                        _ = CallRedirectAPI(callNumber, objectId, customScript, form.userToken);
+                        await TryForShowingForm(callNumber, objectId, customScript);
                     }
-
-                    // Make another HTTP request
-                    //response = await client.PostAsync(apiUrl, null);
-
-                    //if (response.IsSuccessStatusCode)
-                    //{
-                    //    responseBody = await response.Content.ReadAsStringAsync();
-                    //    responseObj = JsonConvert.DeserializeAnonymousType(responseBody, new { output = false });
-                    //    result = responseObj.output;
-                    //    return result;
-                    //}
-                    //else
-                    //{
-                    //    return false;
-                    //}
                 }
-
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return false;
-
-
         }
-        public async void RedirectAfterPass(string Password)
+
+        private async Task TryForShowingForm(string callNumber, string objectId, string customScript)
         {
-            //string LocalToken;
-            //string loginApiUrl = "http://" + form.BarsaAddress + "/api/auth/serviceLogin3";
+            NumberOfTries++;
+            await Task.Delay(500);
+            if (NumberOfTries <= 10)
+            {
+                _ = CallRedirectAPI(callNumber, objectId, customScript, form.userToken);
+            }
+        }
 
-            //var credentials = new
-            //{
-            //    un = form.BarsaUser,
-            //    pwd = Password,
-            //};
-            //var jsonBody = JsonConvert.SerializeObject(credentials);
-            //var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-
-            //using (HttpClient client = new HttpClient())
-            //{
+        public async void RedirectAfterPass(string password, string username)
+        {
             try
             {
-                //HttpResponseMessage loginResponse = await client.PostAsync(loginApiUrl, content);
-                //var token = GetToken(form.BarsaUser, Password, form.BarsaAddress);
-
-                //if (token != null)
-                //{
-                //string loginResponseBody = await loginResponse.Content.ReadAsStringAsync();
-
-                //var loginResponseData = JsonConvert.DeserializeObject<LoginResponse>(loginResponseBody);
-
-                //if (loginResponseData.succeed)
-                //{
-                //    // Remove "Bearer" prefix if present
-                //    string cleanBearerToken = loginResponseData.data.token.StartsWith("bearer ", StringComparison.OrdinalIgnoreCase)
-                //        ? loginResponseData.data.token.Substring(7)
-                //        : loginResponseData.data.token;
-                //    //TODO: should remoe this for tird api ??
-                //    LocalToken = cleanBearerToken;
                 string localIpAddress = GetLocalIpAddress();
-                string Token = form.userToken;
                 var payload = new
                 {
-                    clientIpAddress = localIpAddress
+                    barsaUserName = username,
+                    barsaPassword = password,
                 };
-                LoginResponse loginResponse = _apiHelper.MakeApiCall<LoginResponse>(form.BarsaAddress, "GetLoginCode", payload, Token).Result;
 
-                //string LoginCode = await CallGetLoginCodeApi(form.userToken, localIpAddress);
-                string urlToOpen = $"{form.BarsaAddress}api/openid/callback?provider=CallManagementLogin&LoginCode={loginResponse.LoginCode}&url={HttpUtility.UrlEncode($"{form.BarsaAddress}")}";
+                TokenResponse tokenResponse = await _apiHelper.MakeApiCall<TokenResponse>(form.BarsaAddress, "GetToken", payload, null);
+                if (tokenResponse != null)
+                {
+                    if (tokenResponse.Success)
+                    {
+                        string Token = tokenResponse.Token;
+                        var payloadGetLoginCode = new
+                        {
+                            clientIpAddress = localIpAddress
+                        };
+                        LoginResponse loginResponse = _apiHelper.MakeApiCall<LoginResponse>(form.BarsaAddress, "GetLoginCode", payloadGetLoginCode, Token).Result;
 
-                Process.Start(urlToOpen);
+                        string urlToOpen = $"{form.BarsaAddress}api/openid/callback?provider=CallManagementLogin&LoginCode={loginResponse.LoginCode}&url={HttpUtility.UrlEncode($"{form.BarsaAddress}")}";
 
-                //  return cleanBearerToken;
+                        Process.Start(urlToOpen);
+                    }
+                    else
+                    {
+                        MessageBox.Show(tokenResponse.ErrorMessage ?? "An error occurred during login.");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Error In Loging With Your User Pass");
+                }
+
             }
             catch
             {
@@ -888,6 +851,10 @@ namespace sipservice
     public class LoginResponse
     {
         public string LoginCode { get; set; }
+    }
+    public class RedirectApiResponse
+    {
+        public bool Output { get; set; }
     }
 }
 

@@ -28,10 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(IncomingCallForm));
             this.btnAnswer = new System.Windows.Forms.Button();
             this.btnDrop = new System.Windows.Forms.Button();
             this.ctlCallInfoList = new SIPWindowsAgent.CallInfoListControl();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // btnAnswer
@@ -53,6 +55,10 @@
             resources.ApplyResources(this.ctlCallInfoList, "ctlCallInfoList");
             this.ctlCallInfoList.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.ctlCallInfoList.Name = "ctlCallInfoList";
+            // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
             // 
             // IncomingCallForm
             // 
@@ -78,5 +84,6 @@
         public System.Windows.Forms.Button btnAnswer;
         public System.Windows.Forms.Button btnDrop;
         public CallInfoListControl ctlCallInfoList;
+        private System.Windows.Forms.Timer timer1;
     }
 }

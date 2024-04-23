@@ -14,13 +14,22 @@ namespace SIPWindowsAgent
             InitializeComponent();
         }
 
-        public void ShowData(List<CallerData> data, string callerNumber, bool isInput, string userToken, OpenMethodDelegate openMethod)
+        public List<CallerData> Data { get; private set; }
+        public string CallerNumber { get; private set; }
+        public string UserToken { get; private set; }
+        public SIPService SipService { get; private set; }
+
+        public void ShowData(List<CallerData> data, string callerNumber, bool isInput, string userToken, OpenMethodDelegate openMethod, SIPService sipService)
         {
             if (data == null)
             {
                 //ShowError(true); // Show error label
                 return;
             }
+            this.Data = data;
+            this.CallerNumber = callerNumber;
+            this.UserToken = userToken;
+            this.SipService = sipService;
 
             string text = "";
             if (isInput)
@@ -29,18 +38,24 @@ namespace SIPWindowsAgent
                 text = "تماس خروجی ...";
             lblInfo.Text = text;
             txtCallerNumber.Text = callerNumber;
-            var startHeight = this.Height - ctlLayout.Height;
-            ctlLayout.RowCount = data.Count;
+            var formDiffHeight = this.Height - ctlLayout.Height;
+            var currentHeigth = 0;
+            //ctlLayout.RowCount = data.Count;
             int i = 0;
             foreach (var callerData in data)
             {
                 var control = new CallInfoControl();
                 control.ShowData(callerData, callerNumber, userToken, openMethod);
-                var h = control.Height;
-                startHeight += h;
+                //control.MinimumSize = control.Size;
+                //control.MaximumSize = control.Size;
 
-                ctlLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, h));
-                ctlLayout.Controls.Add(control, 0, i);
+                //ctlLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, h));
+                //ctlLayout.Controls.Add(control, 0, i);
+
+                var h = control.Height;
+                ctlLayout.Controls.Add(control);
+                control.Bounds = new System.Drawing.Rectangle(0, currentHeigth, ctlLayout.Width, h);
+                currentHeigth += h;
 
                 ////if (i < ctlLayout.RowStyles.Count)
                 ////{
@@ -68,7 +83,7 @@ namespace SIPWindowsAgent
                 ////ctlLayout.SetRow(control, i);
                 i++;
             }
-            this.Height = startHeight ;
+            this.Height = formDiffHeight + currentHeigth;
 
             //ctlLayout.RowCount = 0;
             //var rowHeight = 30;
@@ -136,9 +151,22 @@ namespace SIPWindowsAgent
         //        AddLog0(text);
         //}
 
-        private void txtCallerNumber_Click(object sender, EventArgs e)
+        private void lblInfo_MouseClick(object sender, MouseEventArgs e)
         {
-
+            if (e.Button == MouseButtons.Middle)
+            {
+                if ((ParentForm is IncomingCallForm ic))
+                {
+                    var x = new IncomingCallForm(this.CallerNumber, this.Data, this.SipService, this.UserToken);
+                    x.Show();
+                }
+                else if ((ParentForm is OutgoingCallForm oc))
+                {
+                    var x = new OutgoingCallForm(this.CallerNumber, this.Data, this.SipService, this.UserToken);
+                    x.Show();
+                }
+                this.ParentForm.Close();
+            }
         }
     }
 }

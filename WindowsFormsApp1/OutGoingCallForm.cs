@@ -15,19 +15,15 @@ namespace SIPWindowsAgent
 {
     public partial class OutgoingCallForm : Form
     {
-        private string targetNumber;
-        private SIPService sIPService;
+        private readonly SIPService sipService;
 
-        //public OutGoingCallForm()
-        //{
-        //    InitializeComponent();
-        //}
-
-        public OutgoingCallForm(string targetNumber, List<CallerData> callerInfo, SIPService sIPService, string userToken)
+        public OutgoingCallForm(string targetNumber, List<CallerData> callerInfo, SIPService sipService, string userToken)
         {
             InitializeComponent();
-            this.targetNumber = targetNumber;
-            this.sIPService = sIPService;
+            this.sipService = sipService;
+            var config = SettingsManager.Instance.LoadSettings();
+            timer1.Interval = config.CloseFormInterval*1000;
+            timer1.Enabled = true; 
             try
             {
                 if (targetNumber != null)
@@ -37,7 +33,7 @@ namespace SIPWindowsAgent
                     if (callerInfo != null)
                     {
                         var height = this.Height - ctlCallInfoList.Height;
-                        ctlCallInfoList.ShowData(callerInfo, targetNumber, false, userToken, async (s, s1, s2, s3) => await sIPService.CallRedirectAPI(s, s1, s2, s3, true));
+                        ctlCallInfoList.ShowData(callerInfo, targetNumber, false, userToken, async (s, s1, s2, s3) => await sipService.CallRedirectAPI(s, s1, s2, s3, true), sipService);
                         this.Height = height + ctlCallInfoList.Height;
                         this.Refresh();
                         //txtLog.AppendText($"Incoming Call from: {callerInfo.Items[0].Label}" + Environment.NewLine);
@@ -72,7 +68,7 @@ namespace SIPWindowsAgent
 
         private void button3_Click(object sender, EventArgs e)
         {
-            sIPService.RejectCall();
+            sipService.RejectCall();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -82,6 +78,12 @@ namespace SIPWindowsAgent
 
         private void ctlCallInfoList_Load(object sender, EventArgs e)
         {
+
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            this.Close();
 
         }
     }

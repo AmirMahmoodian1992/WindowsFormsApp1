@@ -13,33 +13,21 @@ namespace SIPWindowsAgent
         public event EventHandler RejectButtonClicked;
         private SIPService sipService;
 
-        public void Open(string id)
-        {
-
-        }
-
-        //public IncomingCallForm()
-        //{
-        //    InitializeComponent();
-        //}
-        //public IncomingCallForm(string callerInfo)
-        //{
-        //    InitializeComponent();
-        //    //ctlCallInfoList.AddLog($"Incoming Call from: {callerInfo}");
-        //    // Set the caller information in the form
-        //}
-        public IncomingCallForm(String CallerID, List<CallerData> callerInfo, SIPService sipService, string userToken)
+        public IncomingCallForm(string CallerID, List<CallerData> callerInfo, SIPService sipService, string userToken)
         {
 
             InitializeComponent();
             this.sipService = sipService;
+            var config = SettingsManager.Instance.LoadSettings();
+            timer1.Interval = config.CloseFormInterval * 1000;
+            timer1.Enabled = true;
             // Set the caller information in the form
             try
             {
                 if (callerInfo != null)
                 {
                     var height = this.Height - ctlCallInfoList.Height;
-                    ShowData(callerInfo, CallerID, true, userToken, (s, s1, s2, s3) => sipService.CallRedirectAPI(s, s1, s2, s3, true));
+                    ShowData(callerInfo, CallerID, true, userToken, async (s, s1, s2, s3) => await sipService.CallRedirectAPI(s, s1, s2, s3, true));
                     this.Height = height + ctlCallInfoList.Height;
 
                     //txtLog.AppendText($"Incoming Call from: {callerInfo.Items[0].Label}" + Environment.NewLine);
@@ -59,7 +47,7 @@ namespace SIPWindowsAgent
 
         public void ShowData(List<CallerData> data, string callerNumber, bool isInput, string userToken, OpenMethodDelegate openMethod)
         {
-            ctlCallInfoList.ShowData(data, callerNumber, isInput, userToken, openMethod);
+            ctlCallInfoList.ShowData(data, callerNumber, isInput, userToken, openMethod, this.sipService);
         }
 
         private void button1_Click_1(object sender, EventArgs e)
@@ -91,12 +79,13 @@ namespace SIPWindowsAgent
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (sipService != null)
-            {
-                sipService.RejectCall();
-            }
-            Close();
+            sipService?.RejectCall();
         }
 
+        private void Timer1_Tick(object sender, EventArgs e)
+        {
+            this.Close();
+
+        }
     }
 }

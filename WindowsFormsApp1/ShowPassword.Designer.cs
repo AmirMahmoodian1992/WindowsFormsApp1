@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShowPassword));
             this.label2 = new System.Windows.Forms.Label();
             this.txtUserName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -73,7 +74,7 @@
             this.btnLogin.TabIndex = 9;
             this.btnLogin.Text = "ورود";
             this.btnLogin.UseVisualStyleBackColor = true;
-            this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
+            this.btnLogin.Click += new System.EventHandler(this.BtnLogin_Click);
             // 
             // txtPassword
             // 
@@ -112,6 +113,7 @@
             this.Controls.Add(this.txtPassword);
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ShowPassword";
@@ -128,7 +130,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtUserName;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button btnLogin;
+        internal System.Windows.Forms.Button btnLogin;
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.Button btnCancel;
     }

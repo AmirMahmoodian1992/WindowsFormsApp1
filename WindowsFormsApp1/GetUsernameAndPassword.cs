@@ -32,30 +32,36 @@ namespace SIPWindowsAgent
 
         }
 
-        private void btnLogin_Click(object sender, EventArgs e)
+        private async void btnLogin_Click(object sender, EventArgs e)
         {
-            var payload = new
+            try
             {
-                barsaUserName = txtUserName.Text,
-                barsaPassword = txtPassword.Text,
-            };
-
-            TokenResponse tokenResponse = _apiHelper.MakeApiCall<TokenResponse>(settingForm.BarsaAddressTextBox.Text, "GetToken", payload, null).Result;
-            //sIPService.GetToken(txtUserName.Text, txtPassword.Text, settingForm.BarsaAddressTextBox.Text).Result;
-            if (tokenResponse.Success)
-            {
-                settingForm.BarcaUsername.Text = txtUserName.Text;
-                settingForm.UserTokenTextBox.Text = tokenResponse.Token;
-                Close();
-            }
-            else
-            {
-                if (tokenResponse.ErrorMessage != null)
+                var payload = new
                 {
-                    MessageBox.Show(tokenResponse.ErrorMessage);
+                    barsaUserName = txtUserName.Text,
+                    barsaPassword = txtPassword.Text,
+                };
+
+                TokenResponse tokenResponse = await _apiHelper.MakeApiCall<TokenResponse>(settingForm.BarsaAddressTextBox.Text, "GetToken", payload, null);
+
+                if (tokenResponse!=null && tokenResponse.Success)
+                {
+                    settingForm.BarcaUsername.Text = txtUserName.Text;
+                    settingForm.UserTokenTextBox.Text = tokenResponse.Token;
+                    Close(); // Close the login form
+                }
+                else
+                {
+                    MessageBox.Show(tokenResponse.ErrorMessage ?? "An error occurred during login.");
                 }
             }
+            catch (Exception ex)
+            {
+                // Handle unexpected errors
+                MessageBox.Show("An unexpected error occurred: " + ex.Message);
+            }
         }
+
 
         private void button1_Click(object sender, EventArgs e)
         {

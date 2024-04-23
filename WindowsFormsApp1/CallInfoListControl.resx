@@ -121,20 +121,14 @@
   <data name="ctlLayout.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="ctlLayout.ColumnCount" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="ctlLayout.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 27</value>
-  </data>
-  <data name="ctlLayout.RowCount" type="System.Int32, mscorlib">
-    <value>1</value>
+    <value>3, 64</value>
   </data>
   <data name="ctlLayout.Size" type="System.Drawing.Size, System.Drawing">
-    <value>398, 195</value>
+    <value>398, 158</value>
   </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="ctlLayout.TabIndex" type="System.Int32, mscorlib">
     <value>28</value>
   </data>
@@ -142,16 +136,13 @@
     <value>ctlLayout</value>
   </data>
   <data name="&gt;&gt;ctlLayout.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TableLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;ctlLayout.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
   <data name="&gt;&gt;ctlLayout.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="ctlLayout.LayoutSettings" type="System.Windows.Forms.TableLayoutSettings, System.Windows.Forms">
-    <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls /&gt;&lt;Columns Styles="Percent,100,Absolute,20" /&gt;&lt;Rows Styles="Percent,100" /&gt;&lt;/TableLayoutSettings&gt;</value>
+    <value>3</value>
   </data>
   <data name="txtCallerNumber.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 12pt</value>
@@ -178,7 +169,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;txtCallerNumber.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="lblInfo.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
@@ -208,6 +199,39 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;lblInfo.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="labelReceiverList.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="labelReceiverList.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Tahoma, 8.25pt</value>
+  </data>
+  <data name="labelReceiverList.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="labelReceiverList.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 24</value>
+  </data>
+  <data name="labelReceiverList.Size" type="System.Drawing.Size, System.Drawing">
+    <value>398, 37</value>
+  </data>
+  <data name="labelReceiverList.TabIndex" type="System.Int32, mscorlib">
+    <value>30</value>
+  </data>
+  <data name="labelReceiverList.Text" xml:space="preserve">
+    <value>دریافت اظلاعات تنها از این دریاف کننده ها انجام شد:</value>
+  </data>
+  <data name="&gt;&gt;labelReceiverList.Name" xml:space="preserve">
+    <value>labelReceiverList</value>
+  </data>
+  <data name="&gt;&gt;labelReceiverList.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;labelReceiverList.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;labelReceiverList.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

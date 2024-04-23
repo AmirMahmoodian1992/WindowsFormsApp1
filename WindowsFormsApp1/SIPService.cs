@@ -252,6 +252,7 @@ namespace sipservice
 
                 call1 = softphone.CreateCallObject(phoneLine, dialParams);
                 call1.CallStateChanged += Call_CallStateChanged;
+                ActualCall = call1;
                 call1.Start();
             }
         }
@@ -323,18 +324,14 @@ namespace sipservice
         {
             try
             {
-
                 microphone = Microphone.GetDefaultDevice();
                 speaker = Speaker.GetDefaultDevice();
                 _conferenceRoom.ConnectReceiver(speaker);
                 _conferenceRoom.ConnectSender(microphone);
-
                 //connector.Connect(microphone, mediaSender);
                 //connector.Connect(mediaReceiver, speaker);
-
                 mediaSender.AttachToCall(call1);
                 mediaReceiver.AttachToCall(call1);
-
                 microphone?.Start();
                 speaker?.Start();
             }
@@ -531,60 +528,8 @@ namespace sipservice
                 MessageBox.Show("Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return null;
-
         }
-        //internal async Task<string> CallTokenAPI()
-        //{
-        //    string loginApiUrl = $"http://{form.BarsaAddress}/api/auth/serviceLogin3";
-
-        //    var credentials = new
-        //    {
-        //        un = form.BarsaUser,
-        //        pwd = form.BarsaPass,
-        //    };
-        //    var jsonBody = JsonConvert.SerializeObject(credentials);
-        //    var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-
-        //    using (HttpClient client = new HttpClient())
-        //    {
-        //        try
-        //        {
-        //            HttpResponseMessage loginResponse = await client.PostAsync(loginApiUrl, content);
-
-        //            if (loginResponse.IsSuccessStatusCode)
-        //            {
-        //                string loginResponseBody = await loginResponse.Content.ReadAsStringAsync();
-
-        //                var loginResponseData = JsonConvert.DeserializeObject<LoginResponse>(loginResponseBody);
-
-        //                if (loginResponseData.succeed)
-        //                {
-        //                    // Remove "Bearer" prefix if present
-        //                    string cleanBearerToken = loginResponseData.data.token.StartsWith("bearer ", StringComparison.OrdinalIgnoreCase)
-        //                        ? loginResponseData.data.token.Substring(7)
-        //                        : loginResponseData.data.token;
-        //                    //TODO: should remoe this for tird api ??
-        //                    bearerToken = cleanBearerToken;
-
-        //                    return cleanBearerToken;
-        //                }
-        //                else
-        //                {
-        //                    HandleApiError("Call Token API Error!");
-        //                }
-        //            }
-        //            else
-        //            {
-        //                HandleApiError("Login API Error: " + loginResponse.StatusCode);
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            HandleException("Exception during API call: " + ex.Message);
-        //        }
-        //        return string.Empty;
-        //    }
-        //}
+        
         internal async Task<CallerData> CallGetCallerInfoApi(string userToken, string CallerID)
         {
             string apiUrl = $"http://{form.BarsaAddress}/api2/incomingCall/0.1/";
@@ -738,13 +683,6 @@ namespace sipservice
             {
                 NumberOfTries = 0;
             }
-            //string apiUrl = $"http://{form.BarsaAddress}/api2/incomingCall/0.1/";
-            //string localIpAddress = GetLocalIpAddress();
-
-            //using (HttpClient client = new HttpClient())
-            //{
-            //client.DefaultRequestHeaders.Add("UserCode", userToken);
-            //client.BaseAddress = new Uri(apiUrl);
             try
             {
                 var payload = new

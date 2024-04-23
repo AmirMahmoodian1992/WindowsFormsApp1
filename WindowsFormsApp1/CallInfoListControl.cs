@@ -38,6 +38,12 @@ namespace SIPWindowsAgent
                 text = "تماس خروجی ...";
             lblInfo.Text = text;
             txtCallerNumber.Text = callerNumber;
+            foreach(var item in  data)
+            {
+                labelReceiverList.Text += " "+item.Receiver+" ";
+            }
+            
+
             var formDiffHeight = this.Height - ctlLayout.Height;
             var currentHeigth = 0;
             //ctlLayout.RowCount = data.Count;

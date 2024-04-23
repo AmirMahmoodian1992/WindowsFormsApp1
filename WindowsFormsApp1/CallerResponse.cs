@@ -69,6 +69,10 @@ namespace SIPWindowsAgent
         {
             get; set;
         }
+        public string Receiver
+        {
+            get; set;
+        }
 
     }
     public class InfoData

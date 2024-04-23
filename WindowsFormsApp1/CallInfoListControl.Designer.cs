@@ -32,9 +32,10 @@ namespace SIPWindowsAgent
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CallInfoListControl));
-            this.ctlLayout = new Panel();
+            this.ctlLayout = new System.Windows.Forms.Panel();
             this.txtCallerNumber = new System.Windows.Forms.Label();
             this.lblInfo = new System.Windows.Forms.Label();
+            this.labelReceiverList = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // ctlLayout
@@ -55,11 +56,18 @@ namespace SIPWindowsAgent
             this.lblInfo.Name = "lblInfo";
             this.lblInfo.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lblInfo_MouseClick);
             // 
+            // labelReceiverList
+            // 
+            resources.ApplyResources(this.labelReceiverList, "labelReceiverList");
+            this.labelReceiverList.ForeColor = System.Drawing.Color.Black;
+            this.labelReceiverList.Name = "labelReceiverList";
+            // 
             // CallInfoListControl
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
+            this.Controls.Add(this.labelReceiverList);
             this.Controls.Add(this.lblInfo);
             this.Controls.Add(this.txtCallerNumber);
             this.Controls.Add(this.ctlLayout);
@@ -72,5 +80,6 @@ namespace SIPWindowsAgent
         private Panel ctlLayout;
         private System.Windows.Forms.Label txtCallerNumber;
         private System.Windows.Forms.Label lblInfo;
+        private Label labelReceiverList;
     }
 }

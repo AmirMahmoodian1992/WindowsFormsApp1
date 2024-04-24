@@ -10,7 +10,7 @@ public class ExampleApiModule : NancyModule
 
     public ExampleApiModule()
     {
-        Get("/api/call/{Id}", parameters => HandleCall(parameters.Id));
+        Get("/api/callMain/{Id}", parameters => HandleCall(parameters.Id));
         Get("/api/isformshown", _ => IsFormShown());
 
     }
@@ -37,7 +37,7 @@ public class CustomBootstrapper : DefaultNancyBootstrapper
 
         pipelines.AfterRequest.AddItemToEndOfPipeline(ctx =>
         {
-            ctx.Response.WithHeader("Access-Control-Allow-Origin", "http://localhost:4175")
+            ctx.Response.WithHeader("Access-Control-Allow-Origin", "https://my.barsasoft.com")
                         .WithHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
                         .WithHeader("Access-Control-Allow-Headers", "Accept, Origin, Content-type")
                         .WithHeader("Access-Control-Allow-Credentials", "true");

@@ -109,6 +109,8 @@ namespace SIPWindowsAgent
                 {
                     appConfig.SipSettings[username] = new SipSettings();
                 }
+                sipService.InitSoftphone();
+                sipService.Dispose();
                 SettingsManager.Instance.SaveSettings(appConfig);
                 foreach (var kvp in appConfig.SipSettings)
                 {

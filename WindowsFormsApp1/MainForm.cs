@@ -16,13 +16,15 @@ using System.Text.RegularExpressions;
 using System.Drawing;
 using System.Net.Http;
 using System.Collections.Generic;
+using System.Threading;
+using System.IO;
+using System.Diagnostics;
 
 namespace SIPWindowsAgent
 {
     public partial class MainForm : Form
     {
         private SIPService sipService;
-        private Timer callTimer;
         private int callDurationSeconds;
         private NancyHost _nancyHost;
         private static bool nancyStarted = false;
@@ -44,10 +46,13 @@ namespace SIPWindowsAgent
         ApiServiceHelper apiServiceHelper;
         private OutgoingCallForm outgoingCallForm;
         string selectedSipAccount;
+        
+        private string updateAppLuncherName = "ConsoleApp14.exe"; // Name of your application's executable
+        private string currentExePath = Application.StartupPath;
+
         public MainForm()
         {
             InitializeComponent();
-
             apiServiceHelper = new ApiServiceHelper();
             sipService = new SIPService(this, apiServiceHelper);
             singleFormInstance = this;
@@ -64,11 +69,20 @@ namespace SIPWindowsAgent
                     StartNancyApi();
                     nancyStarted = true;
                 }
+
             }
             catch (Exception ex)
             {
                 HandleInitializationError(ex);
             }
+        }
+        private void checkButton_Click(object sender, EventArgs e)
+        {
+            string launcherPath = Path.Combine(currentExePath, updateAppLuncherName);
+
+            // Start the launcher application
+            Process.Start(launcherPath);
+            
         }
         private void HandleInitializationError(Exception ex)
         {
@@ -113,7 +127,7 @@ namespace SIPWindowsAgent
                     : selectedUsername;
 
                 // Find the phone line matching the selected SIP account
-                sipService.phoneLine = sipService.phonLines.Find(item => item.SIPAccount.UserName == selectedSipAccount);
+                sipService.phoneLine = sipService.phoneLines.Find(item => item.SIPAccount.UserName == selectedSipAccount);
             }
             else
             {
@@ -121,7 +135,6 @@ namespace SIPWindowsAgent
                 sipService.phoneLine = null;
             }
         }
-
         private void StartNancyApi()
         {
             var port = 5656;
@@ -231,7 +244,7 @@ namespace SIPWindowsAgent
         private void HandleApiCallError(AggregateException exception)
         {
             // Log or display the error to the user
-            Console.WriteLine("Error occurred while making API call: " + exception.InnerException.Message);
+            Console.WriteLine("Error occurred while making API callMain: " + exception.InnerException.Message);
             // Optionally, show a message box or log the error
         }
         private void HandleUnexpectedError(Exception ex)
@@ -314,21 +327,6 @@ namespace SIPWindowsAgent
                 }
             }
         }
-        //internal void Incomingcall(string callerIDAsCaller)
-        //{
-        //    incominNumber.Text = callerIDAsCaller;
-        //}
-        //public void UpdateIncomingNumber(string number)
-        //{
-        //    if (incominNumber.InvokeRequired)
-        //    {
-        //        incominNumber.Invoke(new Action(() => UpdateIncomingNumber(number)));
-        //    }
-        //    else
-        //    {
-        //        incominNumber.Text = number;
-        //    }
-        //}
         private void recivedCallTime_Click(object sender, EventArgs e)
         {
 
@@ -445,7 +443,13 @@ namespace SIPWindowsAgent
 
         private void button13_Click(object sender, EventArgs e)
         {
-            txtCallNumber.Text += 0;
+            TransferCallForm callTransferForm = new TransferCallForm(sipService);
+            callTransferForm.Show();
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            sipService.Dispose();
         }
     }
 }

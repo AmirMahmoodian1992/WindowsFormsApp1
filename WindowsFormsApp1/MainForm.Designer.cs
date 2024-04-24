@@ -50,11 +50,12 @@
             this.lstBarcaUsernames = new System.Windows.Forms.ListBox();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.buttonTransfer = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.recivedCallTime = new System.Windows.Forms.Label();
             this.registerCheckBox = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.buttonCheckForUpdate = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -286,17 +287,17 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button13_Click);
             // 
-            // button2
+            // buttonTransfer
             // 
-            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Enabled = false;
-            this.button2.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(18, 170);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 32);
-            this.button2.TabIndex = 30;
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button13_Click);
+            this.buttonTransfer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonTransfer.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonTransfer.Location = new System.Drawing.Point(18, 170);
+            this.buttonTransfer.Name = "buttonTransfer";
+            this.buttonTransfer.Size = new System.Drawing.Size(75, 32);
+            this.buttonTransfer.TabIndex = 30;
+            this.buttonTransfer.Text = "Transfer";
+            this.buttonTransfer.UseVisualStyleBackColor = true;
+            this.buttonTransfer.Click += new System.EventHandler(this.button13_Click);
             // 
             // panel1
             // 
@@ -308,7 +309,7 @@
             this.panel1.Controls.Add(this.button3);
             this.panel1.Controls.Add(this.MuteButton);
             this.panel1.Controls.Add(this.SettingButton);
-            this.panel1.Controls.Add(this.button2);
+            this.panel1.Controls.Add(this.buttonTransfer);
             this.panel1.Controls.Add(this.button4);
             this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.button5);
@@ -354,6 +355,16 @@
             this.label1.TabIndex = 37;
             this.label1.Text = "شماره های متصل";
             // 
+            // buttonCheckForUpdate
+            // 
+            this.buttonCheckForUpdate.Location = new System.Drawing.Point(306, 319);
+            this.buttonCheckForUpdate.Name = "buttonCheckForUpdate";
+            this.buttonCheckForUpdate.Size = new System.Drawing.Size(103, 23);
+            this.buttonCheckForUpdate.TabIndex = 38;
+            this.buttonCheckForUpdate.Text = "Check For Update";
+            this.buttonCheckForUpdate.UseVisualStyleBackColor = true;
+            this.buttonCheckForUpdate.Click += new System.EventHandler(this.checkButton_Click);
+            // 
             // MainForm
             // 
             this.AcceptButton = this.btnCall;
@@ -362,6 +373,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(448, 495);
+            this.Controls.Add(this.buttonCheckForUpdate);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.registerCheckBox);
             this.Controls.Add(this.panel1);
@@ -375,6 +387,7 @@
             this.Name = "MainForm";
             this.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.Text = "ابزار مدیریت تماس ...";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -404,11 +417,12 @@
         public System.Windows.Forms.ListBox lstBarcaUsernames;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button buttonTransfer;
         private System.Windows.Forms.Panel panel1;
         public System.Windows.Forms.Label recivedCallTime;
         internal System.Windows.Forms.CheckBox registerCheckBox;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button buttonCheckForUpdate;
     }
 }
 

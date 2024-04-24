@@ -104,6 +104,12 @@
     <Compile Include="CallInfoControl.Designer.cs">
       <DependentUpon>CallInfoControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="TransferCallForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TransferCallForm.Designer.cs">
+      <DependentUpon>TransferCallForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="RedirectApiService.cs" />
     <Compile Include="OutgoingCallForm.cs">
       <SubType>Form</SubType>
@@ -157,6 +163,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CallInfoControl.resx">
       <DependentUpon>CallInfoControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TransferCallForm.resx">
+      <DependentUpon>TransferCallForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

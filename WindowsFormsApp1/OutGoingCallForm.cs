@@ -13,31 +13,29 @@ using System.Windows.Forms;
 
 namespace SIPWindowsAgent
 {
-    public partial class OutGoingCallForm : Form
+    public partial class OutgoingCallForm : Form
     {
-        private string targetNumber;
-        private SIPService sIPService;
+        private readonly SIPService sipService;
 
-        public OutGoingCallForm()
+        public OutgoingCallForm(string targetNumber, List<CallerData> callerInfo, SIPService sipService, string userToken)
         {
             InitializeComponent();
-        }
-
-        public OutGoingCallForm(string targetNumber, CallerData callerInfo, SIPService sIPService)
-        {
-            InitializeComponent();
-            this.targetNumber = targetNumber;
-            this.sIPService = sIPService;
+            this.sipService = sipService;
+            var config = SettingsManager.Instance.LoadSettings();
+            timer1.Interval = config.CloseFormInterval*1000;
+            timer1.Enabled = true; 
             try
             {
                 if (targetNumber != null)
                 {
-                    txtLog.AppendText($"Out Going Call To: {targetNumber}" + Environment.NewLine);
-                    TitleBarcaCaller.Text = targetNumber;
-                    if (callerInfo.Items[0] != null)
+                    //txtLog.AppendText($"Out Going Call To: {targetNumber}" + Environment.NewLine);
+                    //TitleBarcaCaller.Text = targetNumber;
+                    if (callerInfo != null)
                     {
-                        ctlCallInfo.ShowData(callerInfo, targetNumber, false, (s) => sIPService.CallRedirectAPI(s));
-
+                        var height = this.Height - ctlCallInfoList.Height;
+                        ctlCallInfoList.ShowData(callerInfo, targetNumber, false, userToken, async (s, s1, s2, s3) => await sipService.CallRedirectAPI(s, s1, s2, s3, true), sipService);
+                        this.Height = height + ctlCallInfoList.Height;
+                        this.Refresh();
                         //txtLog.AppendText($"Incoming Call from: {callerInfo.Items[0].Label}" + Environment.NewLine);
                         //TitleBarcaCaller.Text = callerInfo.Items[0].Label != "Unknown" ? callerInfo.Items[0].Label : CallerID;
                         //BarcaCallerFormID.Text = callerInfo.Items[0].Id;
@@ -55,7 +53,7 @@ namespace SIPWindowsAgent
             }
             catch (Exception ex)
             {
-                MessageBox.Show("cannot load user data!!!");
+                MessageBox.Show($"Error in Showing OutGoing Data : {ex}");
             }
         }
 
@@ -68,5 +66,25 @@ namespace SIPWindowsAgent
             this.Top = screenWorkingAreaHeight - this.Height;
         }
 
+        private void button3_Click(object sender, EventArgs e)
+        {
+            sipService.RejectCall();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void ctlCallInfoList_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            this.Close();
+
+        }
     }
 }

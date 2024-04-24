@@ -117,18 +117,73 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <metadata name="timer1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="BarcaCallerPicture.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        DAAACwwBP0AiyAAAAbNJREFUaEPt2N0qbWEYhuHpP7KxNpTDESlKkRVyBM5ASsgW9hwEtrROxN5itfzk
-        /wQIm2Ldb1ll45nDmN83eF817rpKTN98JiZjatTVfZ+6MINdHOMJj29v2/vsY3ab0E3hDK8fsNvYbcPV
-        jk2o0c28YAP2uWFq9UG8Zw8mRPYjYl9dNbIM+9xJuGZP2jLPiY9coBtu2W8gNSyFneXWHtSoFDtw6xRq
-        VIoTuGV/6NSoFHaWW2pQDrfUmBxuqTE53FJjcrilxuRwS43J4dY91KAUdpZbh1CjUvyGW/aKT41K4XqJ
-        MgE1KsU43OrEFdSwVpzDznJtBLkvrEYRom2okWXYy+RQrUMNLbKFkKmxRcKmxhYJmxpbJGxqbJGQDUKN
-        LTKAMLVhGpdQY4scYRiudWAeVVw4HmAOduaX1Y8FVPmvoP/scmcJP/Bp9WENVb4GaeYOK+hFpdnP8S3U
-        nX6mawyhkuxb/Qx1R1/B7nsRWa1CHe5hGUnZpXXO5XnVbMsYWqoHN1AHerLnjG0r3SzUQRH8ROl+QR0S
-        wT5K9xfqkAj+oHQPUIdEYNtKpw6IpK6urqUajX+w1ZzEmyMMbAAAAABJRU5ErkJggg==
+        AAABAAIAGBgAAAEAIACICQAAJgAAABAQAAABACAAaAQAAK4JAAAoAAAAGAAAADAAAAABACAAAAAAAAAJ
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAALh6PxG4ej+tuHo//Lh6P/+4ej//uHo//7h6P/+4ej//uHo//7h6
+        P/+4ej//uHo//7h6P/+4ej//uHo//7h6P/+4ej//uHo//7h6P/+4ej//uHo//bh6P7S4ej8VAAAAALh6
+        P6m2eT7+tnk+/rh6P/+2eT7+tnk+/rh6P/+2eT7+tnk+/rh6P/+2eT7+uHo//7Z5Pv62eT7+tnk+/rh6
+        P/+2eT7+uHo//7Z5Pv62eT7+uHo//7Z5Pv62eT61AAAAALh6P/u2eT7+tnk+/rh6P/+2eT7+tnk+/rh6
+        P/+2eT7+tnk+/rh6P/+2eT7+uHo//7Z5Pv62eT7+tnk+/rh6P/+2eT7+uHo//7Z5Pv62eT7+uHo//7Z5
+        Pv62eT7+AAAAALh6P/+4ej//uHo//7h6P/+4ej//uHo//7h6P/+4ej//uHo//7h6P/+4ej//uHo//7h6
+        P/+4ej//uHo//7h6P/+4ej//uHo//7h6P/+4ej//uHo//7h6P/+4ej//AAAAALh6P/+2eT7+tnk+/rh6
+        P/+2eT7/tnk+/7d6P/+3ej//t3o//7d6P/+3ej//t3o//7d6P/+4ej//tnk+/7Z5Pv+2eT7/tnk+/7Z5
+        Pv+2eT7+uHo//7Z5Pv62eT7+AAAAALh6P/+4ej//uHo//7h6P/+2eT7/tnk+/7d6P/+3ej//uHo/////
+        //////////////////+4ej//tnk+/7Z5Pv+2eT7/tnk+/7Z5Pv+2eT7/uHo//7h6P/+4ej//AAAAALh6
+        P/+2eT7+tnk+/rh6P/+2eT7/uHo//7h6P/+4ej//uHo//7h6P///////////////////////uHo//7h6
+        P/+4ej//tnk+/7Z5Pv+2eT7/uHo//7Z5Pv62eT7+AAAAALh6P/+2eT7+tnk+/rh6P/+2eT7/uHo//7h6
+        P/+4ej//uHo//7h6P/+7f0f//////////////////////7h6P/+4ej//tnk+/7Z5Pv+2eT7/uHo//7Z5
+        Pv62eT7+AAAAALh6P/+4ej//uHo//7h6P/+2eT7/uHo//7h6P/+4ej//uHo//7h6P/+4ej//u39H////
+        //////////////////+4ej//tnk+/7Z5Pv+2eT7/uHo//7h6P/+4ej//AAAAALh6P/+2eT7+tnk+/rh6
+        P/+2eT7/uHo//7h6P/+4ej//uHo//7h6P/+4ej//uHo//7yAR///////////////////////tnk+/7Z5
+        Pv+2eT7/uHo//7Z5Pv62eT7+AAAAALh6P/+4ej//uHo//7h6P////////fv7//37+//9+/v/////////
+        /////////////////////////////////////////////7Z5Pv+2eT7/uHo//7h6P/+4ej//AAAAALh6
+        P/+2eT7+tnk+/rh6P////////fv7//37+//9+/v/////////////////////////////////////////
+        //////////////////+2eT7/uHo//7Z5Pv62eT7+AAAAALh6P/+2eT7+tnk+/rh6P////////fv7//37
+        +//9+/v//////////////////////////////////////////////////////7Z5Pv+2eT7/uHo//7Z5
+        Pv62eT7+AAAAALh6P/+2eT7+tnk+/rh6P/+2eT7/uHo//7h6P/+4ej//uHo//7h6P/+4ej//uHo//7yA
+        R///////////////////////tnk+/7Z5Pv+2eT7/uHo//7Z5Pv62eT7+AAAAALh6P/+4ej//uHo//7h6
+        P/+2eT7/uHo//7h6P/+4ej//uHo//7h6P/+4ej//u39H//////////////////////+4ej//tnk+/7Z5
+        Pv+2eT7/uHo//7h6P/+4ej//AAAAALh6P/+2eT7+tnk+/rh6P/+2eT7/uHo//7h6P/+4ej//uHo//7h6
+        P/+7fkX//////////////////////7h6P/+4ej//tnk+/7Z5Pv+2eT7/uHo//7Z5Pv62eT7+AAAAALh6
+        P/+2eT7+tnk+/rh6P/+2eT7/uHo//7h6P/+4ej//uHo//7h6P///////////////////////uHo//7h6
+        P/+4ej//tnk+/7Z5Pv+2eT7/uHo//7Z5Pv62eT7+AAAAALh6P/+4ej//uHo//7h6P/+2eT7/tnk+/7d6
+        P/+3ej//uHo///////////////////////+4ej//tnk+/7Z5Pv+2eT7/tnk+/7Z5Pv+2eT7/uHo//7h6
+        P/+4ej//AAAAALh6P/+2eT7+tnk+/rh6P/+2eT7+tnk+/rh6P/+2eT7+tnk+/rh6P/+2eT7+uHo//7Z5
+        Pv62eT7+tnk+/rh6P/+2eT7+uHo//7Z5Pv62eT7+uHo//7Z5Pv62eT7+AAAAALh6P/+2eT7+tnk+/rh6
+        P/+2eT7+tnk+/rh6P/+2eT7+tnk+/rh6P/+2eT7+uHo//7Z5Pv62eT7+tnk+/rh6P/+2eT7+uHo//7Z5
+        Pv62eT7+uHo//7Z5Pv62eT7+AAAAALh6P/q4ej//uHo//7h6P/+4ej//uHo//7h6P/+4ej//uHo//7h6
+        P/+4ej//uHo//7h6P/+4ej//uHo//7h6P/+4ej//uHo//7h6P/+4ej//uHo//7h6P/+4ej/9AAAAALh6
+        P6K2eT7+tnk+/rh6P/+2eT7+tnk+/rh6P/+2eT7+tnk+/rh6P/+2eT7+uHo//7Z5Pv62eT7+tnk+/rh6
+        P/+2eT7+uHo//7Z5Pv62eT7+uHo//7Z5Pv62eT6tAAAAALh6Pw22eT6gtnk++bh6P/+2eT7+tnk+/rh6
+        P/+2eT7+tnk+/rh6P/+2eT7+uHo//7Z5Pv62eT7+tnk+/rh6P/+2eT7+uHo//7Z5Pv62eT7+uHo/+rZ5
+        Pqe2eT4RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAIAAAACAAAAAgAAAAIAA
+        AACAAAAAgAAAAIAAAACAAAAAgAAAAIAAAACAAAAAgAAAAIAAAACAAAAAgAAAAIAAAACAAAAAgAAAAIAA
+        AACAAAAAgAAAAIAAAAD///8AKAAAABAAAAAgAAAAAQAgAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAALh6
+        PwW4ej+at3o//Lh6P/+3ej//uHo//7d6P/+4ej//uHo//7d6P/+3ej//uHo//7h6P/+3ej//uHo//bd6
+        P6C4ej8Lt3o/+7Z5Pv63ej//tnk+/rd6P/+2eT7+t3o//7h6P/+2eT7+tnk+/rd6P/+4ej//tnk+/rh6
+        P/+2eT78uHo/DLh6P/+3ej//uHo//7d6P/+4ej//uHo//7h6P/+4ej//uHo//7d6P/+3ej//t3o//7d6
+        P/+4ej//t3o//7h6Pwy4ej//uHo//7d6P/+2eT7/t3o//7t/Rv/69vL//Pn3/9y9n/+2eT7/tnk+/7Z5
+        Pv+2eT7/uHo//7h6P/+4ej8Mt3o//7Z5Pv63ej//uHo//7h6P/+4ej//y51x//78+///////3L2f/7h6
+        P/+2eT7/tnk+/7h6P/+2eT7+uHo/DLh6P/+4ej//t3o//7h6P/+4ej//uHo//7h6P//AiVb//vz7////
+        ///cvZ//tnk+/7Z5Pv+4ej//uHo//7h6Pwy4ej//t3o//8qcb//bu53/27ud/9y9n//cvZ//3L2f/+/g
+        0f///////////9u8n/+2eT7/uHo//7d6P/+4ej8Mt3o//7Z5Pv7cvZ///fv7//37+///////////////
+        /////////////////////v7/2LaX/7h6P/+2eT7+uHo/DLd6P/+2eT7+ypxv/9u7nf/bu53/3L2f/9y9
+        n//cvZ//7+DR////////////27yf/7Z5Pv+4ej//tnk+/rh6Pwy4ej//uHo//7d6P/+4ej//uHo//7h6
+        P/+4ej//wIlW//78+///////3L2f/7Z5Pv+2eT7/uHo//7h6P/+4ej8Mt3o//7Z5Pv63ej//uHo//7h6
+        P/+4ej//y51x//78+///////3L2f/7h6P/+2eT7/tnk+/7h6P/+2eT7+uHo/DLh6P/+4ej//t3o//7Z5
+        Pv+3ej//u39G//r28v/8+ff/3L2f/7Z5Pv+2eT7/tnk+/7Z5Pv+4ej//uHo//7h6Pwy3ej//tnk+/rd6
+        P/+2eT7+t3o//7Z5Pv63ej//uHo//7Z5Pv62eT7+t3o//7h6P/+2eT7+uHo//7Z5Pv64ej8LuHo/+7h6
+        P/+4ej//uHo//7h6P/+4ej//uHo//7h6P/+4ej//uHo//7h6P/+4ej//uHo//7h6P/+4ej/8uHo/BLd6
+        P5S2eT76t3o//7Z5Pv63ej//tnk+/rd6P/+4ej//tnk+/rZ5Pv63ej//uHo//7Z5Pv64ej/7tnk+mQAA
+        AAC3ej8Etnk+C7d6Pwy2eT4Mt3o/DLZ5Pgy3ej8MuHo/DLZ5Pgy2eT4Mt3o/DLh6Pwy2eT4MuHo/C7Z5
+        PgQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AACAAAAA
 </value>
   </data>
 </root>

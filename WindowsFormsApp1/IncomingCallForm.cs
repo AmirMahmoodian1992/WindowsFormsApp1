@@ -3,6 +3,7 @@ using sipservice;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using static sipservice.SIPService;
 
 namespace SIPWindowsAgent
 {
@@ -12,32 +13,22 @@ namespace SIPWindowsAgent
         public event EventHandler RejectButtonClicked;
         private SIPService sipService;
 
-        public void Open(string id)
-        {
-
-        }
-
-        public IncomingCallForm()
-        {
-            InitializeComponent();
-        }
-        public IncomingCallForm(string callerInfo)
-        {
-            InitializeComponent();
-            ctlCallInfo.AddLog($"Incoming Call from: {callerInfo}");
-            // Set the caller information in the form
-        }
-        public IncomingCallForm(String CallerID, CallerData callerInfo, SIPService sipService)
+        public IncomingCallForm(string CallerID, List<CallerData> callerInfo, SIPService sipService, string userToken)
         {
 
             InitializeComponent();
             this.sipService = sipService;
+            var config = SettingsManager.Instance.LoadSettings();
+            timer1.Interval = config.CloseFormInterval * 1000;
+            timer1.Enabled = true;
             // Set the caller information in the form
             try
             {
-                if (callerInfo.Items[0] != null)
+                if (callerInfo != null)
                 {
-                    ShowData(callerInfo, CallerID, true, (s) => sipService.CallRedirectAPI(s));
+                    var height = this.Height - ctlCallInfoList.Height;
+                    ShowData(callerInfo, CallerID, true, userToken, async (s, s1, s2, s3) => await sipService.CallRedirectAPI(s, s1, s2, s3, true));
+                    this.Height = height + ctlCallInfoList.Height;
 
                     //txtLog.AppendText($"Incoming Call from: {callerInfo.Items[0].Label}" + Environment.NewLine);
                     //TitleBarcaCaller.Text = callerInfo.Items[0].Label != "Unknown" ? callerInfo.Items[0].Label : CallerID;
@@ -50,13 +41,13 @@ namespace SIPWindowsAgent
             }
             catch (Exception ex)
             {
-                MessageBox.Show("cannot load user data!!!");
+                MessageBox.Show("Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        public void ShowData(CallerData data, string callerNumber, bool isInput, Action<string> openMethod)
+        public void ShowData(List<CallerData> data, string callerNumber, bool isInput, string userToken, OpenMethodDelegate openMethod)
         {
-            ctlCallInfo.ShowData(data, callerNumber, isInput, openMethod);
+            ctlCallInfoList.ShowData(data, callerNumber, isInput, userToken, openMethod, this.sipService);
         }
 
         private void button1_Click_1(object sender, EventArgs e)
@@ -65,7 +56,7 @@ namespace SIPWindowsAgent
         }
         public void UpdateLabelText(string newText)
         {
-            ctlCallInfo.AddLog(newText);
+            //ctlCallInfoList.AddLog(newText);
         }
 
 
@@ -83,15 +74,18 @@ namespace SIPWindowsAgent
         private void button2_Click_1(object sender, EventArgs e)
         {
             sipService.AnswerCall();
+            btnAnswer.Enabled = false;
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (sipService != null)
-            {
-                sipService.RejectCall();
-            }
-            Close();
+            sipService?.RejectCall();
+        }
+
+        private void Timer1_Tick(object sender, EventArgs e)
+        {
+            this.Close();
+
         }
     }
 }

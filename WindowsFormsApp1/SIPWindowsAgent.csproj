@@ -51,6 +51,9 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Phone_43546.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Barsa.Dynamics.WebService">
       <HintPath>D:\Barsa\4.1.72\WebIII\_Temporary\Dynamics\Barsa.Dynamics.WebService.dll</HintPath>
@@ -87,18 +90,32 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiModule.cs" />
+    <Compile Include="ApiServiceHelper.cs" />
     <Compile Include="CallerResponse.cs" />
+    <Compile Include="CallInfoListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CallInfoListControl.Designer.cs">
+      <DependentUpon>CallInfoListControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="CallInfoControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="CallInfoControl.Designer.cs">
       <DependentUpon>CallInfoControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="OutGoingCallForm.cs">
+    <Compile Include="TransferCallForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="OutGoingCallForm.Designer.cs">
-      <DependentUpon>OutGoingCallForm.cs</DependentUpon>
+    <Compile Include="TransferCallForm.Designer.cs">
+      <DependentUpon>TransferCallForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RedirectApiService.cs" />
+    <Compile Include="OutgoingCallForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OutgoingCallForm.Designer.cs">
+      <DependentUpon>OutgoingCallForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -111,11 +128,17 @@
     <Compile Include="SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ShowPassord.cs">
+    <Compile Include="GetUsernameAndPassword.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ShowPassord.Designer.cs">
-      <DependentUpon>ShowPassord.cs</DependentUpon>
+    <Compile Include="GetUsernameAndPassword.Designer.cs">
+      <DependentUpon>GetUsernameAndPassword.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ShowPassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShowPassword.Designer.cs">
+      <DependentUpon>ShowPassword.cs</DependentUpon>
     </Compile>
     <Compile Include="SipSettings.cs" />
     <Compile Include="SynchronizationManager.cs" />
@@ -135,15 +158,20 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
-    <Compile Include="UserSettingsManager.cs" />
+    <EmbeddedResource Include="CallInfoListControl.resx">
+      <DependentUpon>CallInfoListControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CallInfoControl.resx">
       <DependentUpon>CallInfoControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TransferCallForm.resx">
+      <DependentUpon>TransferCallForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="OutGoingCallForm.resx">
-      <DependentUpon>OutGoingCallForm.cs</DependentUpon>
+    <EmbeddedResource Include="OutgoingCallForm.resx">
+      <DependentUpon>OutgoingCallForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
@@ -161,8 +189,11 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="ShowPassord.resx">
-      <DependentUpon>ShowPassord.cs</DependentUpon>
+    <EmbeddedResource Include="GetUsernameAndPassword.resx">
+      <DependentUpon>GetUsernameAndPassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShowPassword.resx">
+      <DependentUpon>ShowPassword.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -194,6 +225,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\hide.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Phone_43546.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

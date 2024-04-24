@@ -35,34 +35,34 @@
 //        {
 //            foreach (var member in _members)
 //            {
-//                var call = _softPhone.CreateCall(member);
-//                call.CallStateChanged += OutgoingCallStateChanged;
-//                _calls.Add(call);
+//                var callMain = _softPhone.CreateCall(member);
+//                callMain.CallStateChanged += OutgoingCallStateChanged;
+//                _calls.Add(callMain);
 //            }
 
 //            lock (_sync)
 //            {
-//                foreach (var call in _calls)
+//                foreach (var callMain in _calls)
 //                {
-//                    Console.WriteLine("Ringing phone number \"{0}\".", call.DialInfo.Dialed);
-//                    call.Start();
+//                    Console.WriteLine("Ringing phone number \"{0}\".", callMain.DialInfo.Dialed);
+//                    callMain.Start();
 //                }
 //            }
 //        }
 
 //        void OutgoingCallStateChanged(object sender, CallStateChangedArgs e)
 //        {
-//            var call = (IPhoneCall)sender;
+//            var callMain = (IPhoneCall)sender;
 
 //            if (e.State == CallState.Answered)
 //            {
-//                Console.WriteLine("\nCall has been accepted by {0}.", call.DialInfo.Dialed);
-//                Console.WriteLine("Call from \"{0}\" is being transferred to \"{1}\".\n", _incomingCall.DialInfo.Dialed, call.DialInfo.Dialed);
-//                _incomingCall.AttendedTransfer(call);
+//                Console.WriteLine("\nCall has been accepted by {0}.", callMain.DialInfo.Dialed);
+//                Console.WriteLine("Call from \"{0}\" is being transferred to \"{1}\".\n", _incomingCall.DialInfo.Dialed, callMain.DialInfo.Dialed);
+//                _incomingCall.AttendedTransfer(callMain);
 
 //                lock (_sync)
 //                {
-//                    _calls.Remove(call);
+//                    _calls.Remove(callMain);
 //                    OnCompleted();
 //                }
 //            }
@@ -71,8 +71,8 @@
 //            {
 //                lock (_sync)
 //                {
-//                    call.HangUp();
-//                    _calls.Remove(call);
+//                    callMain.HangUp();
+//                    _calls.Remove(callMain);
 //                    if (_calls.Count == 0)
 //                    {
 //                        Console.WriteLine("No available destination.");
@@ -101,10 +101,10 @@
 
 //        void HangupOutgoingCalls()
 //        {
-//            foreach (var call in _calls)
+//            foreach (var callMain in _calls)
 //            {
-//                Console.WriteLine("Ringing phone number \"{0}\" ends.", call.DialInfo.Dialed);
-//                call.HangUp();
+//                Console.WriteLine("Ringing phone number \"{0}\" ends.", callMain.DialInfo.Dialed);
+//                callMain.HangUp();
 //            }
 //            _calls.Clear();
 //        }

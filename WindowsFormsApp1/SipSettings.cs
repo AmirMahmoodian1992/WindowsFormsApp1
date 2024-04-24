@@ -13,6 +13,8 @@ using System.Security.Cryptography;
 using System.Text;
 
 
+
+
 namespace SIPWindowsAgent
 {
 
@@ -24,63 +26,64 @@ namespace SIPWindowsAgent
         public string RegisterPassword { get; set; }
         public string DomainHost { get; set; }
         public string DomainPort { get; set; }
-        //public string BarcaPass { get; set; }
-        public string BarsaUserName { get; set; }
-        internal bool IsTransferEnabled { get; set; }
-        internal string CouplePhone { get; set; }
-        internal string BarsaAddress { get; set; }
-        public string BarcaPass { get; set; }
-
-
-        //public string userName;
-        //public string displayName;
-        //public string authenticationId;
-        //public string registerPassword;
-        //public string domainHost;
-        //public string domainPort;
-        //public string BarcaPass;
-        //public string BarsaUSerName;
-        //internal bool IstransferEnabled;
-        //internal string CouplePhone;
-        //internal string BarsaAddress;
-
-
+        public bool IsItDefault { get; set; }
+        public string OutGoingCallPrefix { get; set; }
+        public bool RegistrableOnClient { get; set; }
     }
 
     public class AppConfig
     {
+        public string BarsaUserName { get; set; }
+        public string BarsaAddress { get; set; }
+        public string UserToken { get; set; }
+        public string CouplePhone { get; set; }
+        public bool IsTransferEnabled { get; set; }
+        public int CloseFormInterval { get; set; } = 30;
+
         public Dictionary<string, SipSettings> SipSettings { get; set; } = new Dictionary<string, SipSettings>();
     }
 
     public class SettingsManager
     {
+        private static SettingsManager instance;
+        public static SettingsManager Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new SettingsManager();
+                }
+                return instance;
+            }
+        }
         private readonly string configFile = "config.json";
 
         public AppConfig LoadSettings()
         {
+
+
             try
             {
                 string json = File.ReadAllText(configFile);
                 AppConfig config = JsonConvert.DeserializeObject<AppConfig>(json);
                 if (config == null)
                 {
-                    return new AppConfig(); 
+                    return new AppConfig();
                 }
-                foreach (var userSettings in config?.SipSettings?.Values)
-                {
-                    userSettings.BarcaPass = DecryptString(userSettings.BarcaPass);
-                    userSettings.RegisterPassword = DecryptString(userSettings.RegisterPassword);
-                }
+                //foreach (var userSettings in config?.SipSettings?.Values)
+                //{
+                //    userSettings.BarcaPass = DecryptString(userSettings.BarcaPass);
+                //    userSettings.RegisterPassword = DecryptString(userSettings.RegisterPassword);
+                //}
                 return config;
             }
             catch (FileNotFoundException)
             {
-                // Handle file not found, or return a default config
                 return new AppConfig();
             }
             catch (Exception ex)
             {
-                // Handle other exceptions as needed
                 Console.WriteLine($"Error loading settings: {ex.Message}");
                 return new AppConfig();
             }
@@ -91,12 +94,12 @@ namespace SIPWindowsAgent
             try
             {
                 //string json = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
-                
-                foreach (var userSettings in config.SipSettings.Values)
-                {
-                    userSettings.BarcaPass = EncryptString(userSettings.BarcaPass);
-                    userSettings.RegisterPassword = EncryptString(userSettings.RegisterPassword);
-                }
+
+                //foreach (var userSettings in config.SipSettings.Values)
+                //{
+                //    userSettings.BarcaPass = EncryptString(userSettings.BarcaPass);
+                //    userSettings.RegisterPassword = EncryptString(userSettings.RegisterPassword);
+                //}
                 string json = JsonConvert.SerializeObject(config);
                 File.WriteAllText(configFile, json);
 

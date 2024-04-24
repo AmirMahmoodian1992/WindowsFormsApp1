@@ -47,7 +47,7 @@ namespace SIPWindowsAgent
         private OutgoingCallForm outgoingCallForm;
         string selectedSipAccount;
         
-        private string updateAppLuncherName = "ConsoleApp14.exe"; // Name of your application's executable
+        private string updateAppLuncherName = "UpdateSipAgentConsoleApp.exe"; // Name of your application's executable
         private string currentExePath = Application.StartupPath;
 
         public MainForm()

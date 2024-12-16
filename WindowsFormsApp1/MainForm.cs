@@ -46,9 +46,19 @@ namespace SIPWindowsAgent
         ApiServiceHelper apiServiceHelper;
         private OutgoingCallForm outgoingCallForm;
         string selectedSipAccount;
-        
+
+        TransferCallForm callTransferForm;
+        private bool isWindowOpen = false;
+
+        internal bool isOperationInProgress = false;
+        internal object _sync;
+
+
+
         private string updateAppLuncherName = "UpdateSipAgentConsoleApp.exe"; // Name of your application's executable
         private string currentExePath = Application.StartupPath;
+        private DateTime lastClickTime = DateTime.MinValue;
+
 
         public MainForm()
         {
@@ -56,6 +66,9 @@ namespace SIPWindowsAgent
             apiServiceHelper = new ApiServiceHelper();
             sipService = new SIPService(this, apiServiceHelper);
             singleFormInstance = this;
+            var getDevices = new GetCurrentDevices(sipService.MediaHandlers);
+            _sync = new object();
+
         }
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -78,11 +91,12 @@ namespace SIPWindowsAgent
         }
         private void checkButton_Click(object sender, EventArgs e)
         {
+            MessageBox.Show("new version !!");
             string launcherPath = Path.Combine(currentExePath, updateAppLuncherName);
 
             // Start the launcher application
             Process.Start(launcherPath);
-            
+
         }
         private void HandleInitializationError(Exception ex)
         {
@@ -197,11 +211,11 @@ namespace SIPWindowsAgent
                 this.Invoke(new Action(() => CreatCallFromApi(number)));
                 return;
             }
-            string targetNumber=number;
+            string targetNumber = number;
 
             if (number.StartsWith("$"))
             {
-                targetNumber =  number.Substring(1);
+                targetNumber = number.Substring(1);
             }
 
             else if (config.SipSettings.ContainsKey(selectedSipAccount))
@@ -213,7 +227,7 @@ namespace SIPWindowsAgent
             txtCallNumber.Text = targetNumber;
             btnCall.PerformClick();
         }
-        public void ShowingOutGoingCallForm(string number, SIPService sipService, string token)
+        public void ShowingOutGoingCallForm(string number, SIPService sipService, string token, IPhoneCall call)
         {
             try
             {
@@ -232,18 +246,27 @@ namespace SIPWindowsAgent
                     }
 
                     var callerData = task.Result;
-                    outgoingCallForm = new OutgoingCallForm(number, callerData, sipService, token);
-                    SIPService.ShowNotifyWindow(outgoingCallForm);
-                }, TaskScheduler.FromCurrentSynchronizationContext());
+                    sipService.CallerInfo = callerData;
+
+                    // Use Control.BeginInvoke to marshal the creation of the form back to the UI thread
+                    
+                        BeginInvoke(new Action(() =>
+                        {
+                            outgoingCallForm = new OutgoingCallForm(number, callerData, sipService, token, call);
+                            SIPService.ShowNotifyWindow(outgoingCallForm);
+                        }));
+                    
+                });
             }
             catch (Exception ex)
             {
                 HandleUnexpectedError(ex);
             }
         }
+
         private void HandleApiCallError(AggregateException exception)
         {
-            // Log or display the error to the user
+            // Logers or display the error to the user
             Console.WriteLine("Error occurred while making API callMain: " + exception.InnerException.Message);
             // Optionally, show a message box or log the error
         }
@@ -254,6 +277,17 @@ namespace SIPWindowsAgent
         }
         public void CreateCall(object sender, EventArgs e)
         {
+            //if (isOperationInProgress)
+            //    return;
+
+            isOperationInProgress = true;
+
+            TimeSpan elapsed = DateTime.Now - lastClickTime;
+            if (elapsed.TotalMilliseconds < 1000) // Adjust the threshold as needed
+            {
+                return;
+            }
+            lastClickTime = DateTime.Now;
             string phoneNumber = txtCallNumber.Text;
 
             if (string.IsNullOrWhiteSpace(phoneNumber))
@@ -269,8 +303,11 @@ namespace SIPWindowsAgent
             }
 
             string actualPhoneNumber = NormalizePhoneNumber(phoneNumber);
-            ShowingOutGoingCallForm(actualPhoneNumber, sipService, userToken);
-            sipService.CreateCall(phoneNumber);
+            Task.Run(() =>
+            {
+                ShowingOutGoingCallForm(actualPhoneNumber, sipService, userToken, sipService.CreateCall(phoneNumber));
+
+            });
         }
         private bool IsValidPhoneNumber(string phoneNumber)
         {
@@ -291,15 +328,15 @@ namespace SIPWindowsAgent
         }
         private void DropCall(object sender, EventArgs e)
         {
-            sipService.DropCall();
+            sipService.DropCall(sipService.ActualCall);
         }
         private void AnswerCall(object sender, EventArgs e)
         {
-            sipService.AnswerCall();
+            sipService.AnswerCall(sipService.ActualCall);
         }
         private void RejectCall(object sender, EventArgs e)
         {
-            sipService.RejectCall();
+            sipService.RejectCall(sipService.ActualCall);
 
         }
         internal void CallCompleted()
@@ -307,7 +344,7 @@ namespace SIPWindowsAgent
             if (outgoingCallForm != null && outgoingCallForm.IsHandleCreated)
             {
                 // Check if the form's handle has been created
-                outgoingCallForm.Invoke(new Action(() =>
+                outgoingCallForm.BeginInvoke(new Action(() =>
                 {
                     outgoingCallForm.btnDropCall.Enabled = false;
                 }));
@@ -319,7 +356,7 @@ namespace SIPWindowsAgent
             {
                 if (txtLog.InvokeRequired)
                 {
-                    txtLog.Invoke(new Action(() => UpdateLog(message)));
+                    BeginInvoke(new Action(() => UpdateLog(message))); // Use BeginInvoke for asynchronous update
                 }
                 else
                 {
@@ -327,6 +364,7 @@ namespace SIPWindowsAgent
                 }
             }
         }
+
         private void recivedCallTime_Click(object sender, EventArgs e)
         {
 
@@ -440,11 +478,27 @@ namespace SIPWindowsAgent
         {
             txtCallNumber.Text += 9;
         }
+        private void button14_Click(object sender, EventArgs e)
+        {
+            txtCallNumber.Text += 0;
+
+        }
 
         private void button13_Click(object sender, EventArgs e)
         {
-            TransferCallForm callTransferForm = new TransferCallForm(sipService);
-            callTransferForm.Show();
+            if (!isWindowOpen)
+            {
+                // Create a new instance of Form2 if it's not already open
+                callTransferForm = new TransferCallForm(sipService);
+                callTransferForm.FormClosed += (s, args) => isWindowOpen = false; // Update flag when Form2 is closed
+                callTransferForm.Show();
+                isWindowOpen = true;
+            }
+            else
+            {
+                // Bring the existing instance of Form2 to the front
+                callTransferForm?.BringToFront();
+            }
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)

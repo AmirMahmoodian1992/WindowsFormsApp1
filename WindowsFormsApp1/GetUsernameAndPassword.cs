@@ -44,15 +44,23 @@ namespace SIPWindowsAgent
 
                 TokenResponse tokenResponse = await _apiHelper.MakeApiCall<TokenResponse>(settingForm.BarsaAddressTextBox.Text, "GetToken", payload, null);
 
-                if (tokenResponse!=null && tokenResponse.Success)
+                if (tokenResponse!=null )
                 {
-                    settingForm.BarcaUsername.Text = txtUserName.Text;
-                    settingForm.UserTokenTextBox.Text = tokenResponse.Token;
-                    Close(); // Close the login form
+                    if (tokenResponse.Success)
+                    {
+                        settingForm.BarcaUsername.Text = txtUserName.Text;
+                        settingForm.UserTokenTextBox.Text = tokenResponse.Token;
+                        Close(); // Close the login form
+                    }
+                    else
+                    {
+                        MessageBox.Show(tokenResponse.ErrorMessage ?? "An error occurred during login.");
+                    }
                 }
                 else
                 {
-                    MessageBox.Show(tokenResponse.ErrorMessage ?? "An error occurred during login.");
+                    MessageBox.Show("Token Response Is Empty.");
+
                 }
             }
             catch (Exception ex)

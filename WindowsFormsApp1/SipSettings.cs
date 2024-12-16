@@ -57,8 +57,24 @@ namespace SIPWindowsAgent
                 return instance;
             }
         }
-        private readonly string configFile = "config.json";
+        private readonly string configFile;
 
+        public SettingsManager()
+        {
+            // Get the path to the AppData directory for the current user
+            string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            // Combine it with your application's name or any other directory structure
+            string appConfigDirectory = Path.Combine(appDataPath, "Sip Agent App");
+
+            // Ensure the directory exists, create it if it doesn't
+            if (!Directory.Exists(appConfigDirectory))
+            {
+                Directory.CreateDirectory(appConfigDirectory);
+            }
+
+            // Set the configuration file path
+            configFile = Path.Combine(appConfigDirectory, "config.json");
+        }
         public AppConfig LoadSettings()
         {
 

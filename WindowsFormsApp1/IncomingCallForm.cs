@@ -1,4 +1,5 @@
 ﻿using onvif.services;
+using Ozeki.VoIP;
 using sipservice;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,12 @@ namespace SIPWindowsAgent
         public event EventHandler AcceptButtonClicked;
         public event EventHandler RejectButtonClicked;
         private SIPService sipService;
+        private string callId;
+        IPhoneCall call;
 
-        public IncomingCallForm(string CallerID, List<CallerData> callerInfo, SIPService sipService, string userToken)
+
+
+        public IncomingCallForm(string CallerID, List<CallerData> callerInfo, SIPService sipService, string userToken, string callId, IPhoneCall call)
         {
 
             InitializeComponent();
@@ -21,13 +26,16 @@ namespace SIPWindowsAgent
             var config = SettingsManager.Instance.LoadSettings();
             timer1.Interval = config.CloseFormInterval * 1000;
             timer1.Enabled = true;
+            this.callId = callId;
+            this.call=call;
             // Set the caller information in the form
             try
             {
                 if (callerInfo != null)
                 {
+                    SharedState.Instance.StateChanged += SharedState_StateChanged;
                     var height = this.Height - ctlCallInfoList.Height;
-                    ShowData(callerInfo, CallerID, true, userToken, async (s, s1, s2, s3) => await sipService.CallRedirectAPI(s, s1, s2, s3, true));
+                    ShowData(callerInfo, CallerID, true, userToken, async (s, s1, s2, s3) => await sipService.CallRedirectAPI(s, s1, s2, s3, true), call);
                     this.Height = height + ctlCallInfoList.Height;
 
                     //txtLog.AppendText($"Incoming Call from: {callerInfo.Items[0].Label}" + Environment.NewLine);
@@ -43,11 +51,29 @@ namespace SIPWindowsAgent
             {
                 MessageBox.Show("Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+           
+        }
+        private void SharedState_StateChanged(object sender, StateChangedEventArgs e)
+        {
+            if (e.CallId == callId)
+            {
+                if (callStateLable.InvokeRequired)
+                {
+                    callStateLable.Invoke(new MethodInvoker(delegate
+                    {
+                        callStateLable.Text = SharedState.Instance.GetState(callId).ToString();
+                    }));
+                }
+                else
+                {
+                    callStateLable.Text = SharedState.Instance.GetState(callId).ToString();
+                }
+            }
         }
 
-        public void ShowData(List<CallerData> data, string callerNumber, bool isInput, string userToken, OpenMethodDelegate openMethod)
+        public void ShowData(List<CallerData> data, string callerNumber, bool isInput, string userToken, OpenMethodDelegate openMethod, IPhoneCall call)
         {
-            ctlCallInfoList.ShowData(data, callerNumber, isInput, userToken, openMethod, this.sipService);
+            ctlCallInfoList.ShowData(data, callerNumber, isInput, userToken, openMethod, this.sipService, call);
         }
 
         private void button1_Click_1(object sender, EventArgs e)
@@ -73,19 +99,23 @@ namespace SIPWindowsAgent
 
         private void button2_Click_1(object sender, EventArgs e)
         {
-            sipService.AnswerCall();
+            sipService.AnswerCall(call);
             btnAnswer.Enabled = false;
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            sipService?.RejectCall();
+            sipService?.RejectCall(call);
         }
 
         private void Timer1_Tick(object sender, EventArgs e)
         {
             this.Close();
 
+        }
+        private void IncomingCallForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            SharedState.Instance.StateChanged -= SharedState_StateChanged;
         }
     }
 }

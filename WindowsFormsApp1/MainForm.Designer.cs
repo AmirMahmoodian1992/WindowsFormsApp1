@@ -236,7 +236,7 @@
             this.button13.TabIndex = 30;
             this.button13.Text = "0";
             this.button13.UseVisualStyleBackColor = true;
-            this.button13.Click += new System.EventHandler(this.button13_Click);
+            this.button13.Click += new System.EventHandler(this.button14_Click);
             // 
             // MuteButton
             // 

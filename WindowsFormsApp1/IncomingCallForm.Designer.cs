@@ -32,8 +32,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(IncomingCallForm));
             this.btnAnswer = new System.Windows.Forms.Button();
             this.btnDrop = new System.Windows.Forms.Button();
-            this.ctlCallInfoList = new SIPWindowsAgent.CallInfoListControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.callStateLable = new System.Windows.Forms.Label();
+            this.ctlCallInfoList = new SIPWindowsAgent.CallInfoListControl();
             this.SuspendLayout();
             // 
             // btnAnswer
@@ -50,15 +51,20 @@
             this.btnDrop.UseVisualStyleBackColor = true;
             this.btnDrop.Click += new System.EventHandler(this.button3_Click);
             // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
+            // 
+            // callStateLable
+            // 
+            resources.ApplyResources(this.callStateLable, "callStateLable");
+            this.callStateLable.Name = "callStateLable";
+            // 
             // ctlCallInfoList
             // 
             resources.ApplyResources(this.ctlCallInfoList, "ctlCallInfoList");
             this.ctlCallInfoList.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.ctlCallInfoList.Name = "ctlCallInfoList";
-            // 
-            // timer1
-            // 
-            this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
             // 
             // IncomingCallForm
             // 
@@ -66,6 +72,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(225)))), ((int)(((byte)(200)))));
+            this.Controls.Add(this.callStateLable);
             this.Controls.Add(this.ctlCallInfoList);
             this.Controls.Add(this.btnAnswer);
             this.Controls.Add(this.btnDrop);
@@ -75,8 +82,10 @@
             this.Name = "IncomingCallForm";
             this.Opacity = 0.9D;
             this.TopMost = true;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.IncomingCallForm_FormClosed);
             this.Load += new System.EventHandler(this.IncomingCallForm_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -85,5 +94,6 @@
         public System.Windows.Forms.Button btnDrop;
         public CallInfoListControl ctlCallInfoList;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Label callStateLable;
     }
 }

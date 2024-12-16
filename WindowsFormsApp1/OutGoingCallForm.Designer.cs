@@ -34,6 +34,7 @@
             this.btnDropCall = new System.Windows.Forms.Button();
             this.ctlCallInfoList = new SIPWindowsAgent.CallInfoListControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.callStateLable = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button2
@@ -79,6 +80,16 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // callStateLable
+            // 
+            this.callStateLable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.callStateLable.AutoSize = true;
+            this.callStateLable.Location = new System.Drawing.Point(238, 255);
+            this.callStateLable.Name = "callStateLable";
+            this.callStateLable.Size = new System.Drawing.Size(53, 13);
+            this.callStateLable.TabIndex = 40;
+            this.callStateLable.Text = "Call State";
+            // 
             // OutgoingCallForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -86,6 +97,7 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ClientSize = new System.Drawing.Size(398, 277);
+            this.Controls.Add(this.callStateLable);
             this.Controls.Add(this.ctlCallInfoList);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.btnDropCall);
@@ -97,8 +109,10 @@
             this.Name = "OutgoingCallForm";
             this.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.Text = "تماس خروجی ..";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OutGoingCallForm_FormClosed);
             this.Load += new System.EventHandler(this.OutGoingCallForm_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -108,5 +122,6 @@
         public System.Windows.Forms.Button btnDropCall;
         public CallInfoListControl ctlCallInfoList;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Label callStateLable;
     }
 }

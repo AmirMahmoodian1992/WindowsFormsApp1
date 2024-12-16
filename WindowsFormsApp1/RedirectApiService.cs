@@ -22,7 +22,7 @@
 //            userToken
 //        };
 
-//        // Use helper method to make API call
+//        // Use helper method to make API callMain
 //        var result = await _apiHelper.MakeApiCall<bool>(apiUrl, payload);
 
 //        // Additional processing if needed

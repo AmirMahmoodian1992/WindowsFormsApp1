@@ -28,6 +28,16 @@ using AForge.Imaging.Filters;
 using Ozeki;
 using System.Reflection;
 using System.Threading;
+using utils;
+using static System.Windows.Forms.AxHost;
+using System.Runtime.CompilerServices;
+using static utils.TAI.Calendar;
+using Ozeki.Camera;
+using DateTime = System.DateTime;
+using System.Dynamic;
+using Barsa.Spl;
+using Org.BouncyCastle.Asn1.Ocsp;
+using System.Globalization;
 namespace sipservice
 {
     public class SIPService
@@ -35,12 +45,15 @@ namespace sipservice
         private MainForm form;
         private const string OzekiLicenseKey = "UDoyMDMzLTEyLTI1LFVQOjIwMzMtMDEtMDEsTUNDOjUwMCxNUEw6NTAwLE1TTEM6NTAwLE1GQzo1MDAsRzcyOTp0cnVlLE1XUEM6NTAwLE1JUEM6NTAwfHFQZDBhQnhlaEFGaTlNMmV4cXZxaHUyVE5rMWh2S0FzaUZlVlowbFFseTZWZ3JKbmFMTXh3ZVV2elBGcEliTFpwNHZtZDArZlZwc2VkRGpjQWdKR3ZnPT0=";
         private const string OzekiLicenseUserName = "OZSDK-CALL-1234567-IWAREZ 2017";
-        private static ISoftPhone softphone;
+        private static ISoftPhone softPhone;
         internal IPhoneLine phoneLine;
-        internal List<IPhoneLine> phonLines = new List<IPhoneLine>();
-        private IPhoneCall call1;
-        private IPhoneCall call2;
-        IPhoneCall ActualCall;
+        internal List<IPhoneLine> phoneLines = new List<IPhoneLine>();
+        private IPhoneCall callMain;
+        private IPhoneCall callConfrance;
+        private IPhoneCall callTransfer;
+
+
+        internal IPhoneCall ActualCall;
         static Speaker speaker;
         static MediaConnector connector;
         static PhoneCallAudioReceiver mediaReceiver;
@@ -51,7 +64,7 @@ namespace sipservice
         public int MinPort = 20001;
         public int MaxPort = 20500;
         private string bearerToken;
-        List<CallerData> CallerInfo;
+        internal List<CallerData> CallerInfo;
         private System.Timers.Timer callTimer;
         static int port = 10000;
         private bool flage;
@@ -60,6 +73,11 @@ namespace sipservice
         private int NumberOfTries;
         private int NumberOfTries2;
         private readonly ApiServiceHelper _apiHelper;
+        public MediaHandlers MediaHandlers { get; private set; }
+        private Dictionary<string, IncomingCallForm> incomingCallForms = new Dictionary<string, IncomingCallForm>();
+
+
+
         public SIPService(MainForm form, ApiServiceHelper apiHelper)
         {
             microphone = Microphone.GetDefaultDevice();
@@ -77,40 +95,79 @@ namespace sipservice
             {
                 MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            InitSoftphone();
+            MediaHandlers = new MediaHandlers();
+            MediaHandlers.Init();
+
+
+        }
+        internal void InitSoftphone()
+        {
+            if (softPhone != null)
+            {
+                foreach (var line in phoneLines)
+                {
+                    if (line.RegState == RegState.RegistrationSucceeded)
+                        softPhone.UnregisterPhoneLine(line);
+                }
+
+                softPhone.IncomingCall -= (Softphone_IncomingCall);
+                softPhone.Close();
+            }
+            softPhone = SoftPhoneFactory.CreateSoftPhone(MinPort, MaxPort);
+        }
+        public void Dispose()
+        {
+            // unregister phone lines
+            foreach (IPhoneLine line in phoneLines)
+            {
+                if (line.RegState == RegState.RegistrationSucceeded)
+                    softPhone.UnregisterPhoneLine(line);
+
+                UnsubscribeFromLineEvents(line);
+                line.Dispose();
+            }
+            phoneLines.Clear();
+            softPhone.Close();
+
+        }
+        private void UnsubscribeFromLineEvents(IPhoneLine line)
+        {
+            if (line == null)
+                return;
+
+            line.RegistrationStateChanged -= line_RegStateChanged;
         }
         public void RegisterAccount(string userName, string displayName, string authenticationId, string registerPassword, string domainHost, int domainPort)
         {
-            softphone = SoftPhoneFactory.CreateSoftPhone(MinPort, MaxPort);
-
             flage = false;
-
             try
             {
                 var registrationRequired = true;
                 var account = new SIPAccount(registrationRequired, displayName, userName, authenticationId, registerPassword, domainHost, domainPort);
 
-                phoneLine = softphone.CreatePhoneLine(account);
+                phoneLine = softPhone.CreatePhoneLine(account);
 
-                phonLines.Add(phoneLine);// = softphone.CreatePhoneLine(account);
+                phoneLines.Add(phoneLine);// = softPhone.CreatePhoneLine(account);
                 phoneLine.RegistrationStateChanged += line_RegStateChanged;
 
-                Log($"Registration For {userName} is in progress...", "MainForm");
+                Logers($"Registration For {userName} is in progress...", "MainForm");
                 phoneLine.Config.KeepAliveInterval = 10;
 
-                if (softphone != null)
+                if (softPhone != null)
                 {
-                    softphone.IncomingCall -= (Softphone_IncomingCall);
-                    // softphone.Close();
+                    softPhone.IncomingCall -= (Softphone_IncomingCall);
+                    // softPhone.Close();
                 }
-                softphone.IncomingCall += Softphone_IncomingCall;
+                softPhone.IncomingCall += Softphone_IncomingCall;
 
-                softphone.RegisterPhoneLine(phoneLine);
+                softPhone.RegisterPhoneLine(phoneLine);
                 InitializeConferenceRoom();
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error during SIP registration: " + ex.Message);
-                Log($"Error during SIP registration for {userName}: {ex.Message}", "MainForm");
+                Logers($"Error during SIP registration for {userName}: {ex.Message}", "MainForm");
             }
 
         }
@@ -124,12 +181,12 @@ namespace sipservice
             IPhoneLine currentPhoneLine = sender as IPhoneLine;
             if (e.State == RegState.NotRegistered || e.State == RegState.Error)
             {
-                Log($"Registration failed! for {currentPhoneLine.SIPAccount.RegisterName}, Reg State:{e.State}", "MainForm");
+                Logers($"Registration failed! for {currentPhoneLine.SIPAccount.RegisterName}, Reg State:{e.State}", "MainForm");
             }
 
             if (e.State == RegState.RegistrationSucceeded)
             {
-                Log($"Registration succeeded for {currentPhoneLine.SIPAccount.RegisterName} - Online!", "MainForm");
+                Logers($"Registration succeeded for {currentPhoneLine.SIPAccount.RegisterName} - Online!", "MainForm");
                 if (form.InvokeRequired)
                 {
                     form.Invoke(new Action(() => form.registerCheckBox.Checked = true));
@@ -137,50 +194,211 @@ namespace sipservice
                 form.registerCheckBox.Checked = true;
             }
         }
+
         private void Softphone_IncomingCall(object sender, Ozeki.Media.VoIPEventArgs<IPhoneCall> e)
         {
-            //e.Item
-            Type type = e.Item.GetType();
-            PropertyInfo property = type.GetProperty("PhoneLine");
-            IPhoneLine currentPhoneLine = (IPhoneLine)property.GetValue(e.Item, null);
-            if (form.InvokeRequired)
+            lock (form._sync)
             {
-                form.BeginInvoke(new Action(() => Softphone_IncomingCall(sender, e)));
-                return;
-            }
-            string DialedNumber = e.Item.DialInfo.Dialed;
-            call1 = e.Item;
-            ActualCall = call1;
-            string CallerId = ((Ozeki.VoIP.LocalCallWrapper)e.Item).CallerIDAsCaller;
-            // Check if CallerId starts with "9"
-            CallerId = FixIncomingNumber(CallerId);
+                //e.Item
+                Type type = e.Item.GetType();
 
-            Log($"recived call from {CallerId} for {currentPhoneLine.SIPAccount.RegisterName} Account", "MainForm");
-            call1.CallStateChanged += Call_CallStateChanged;
-            form.getRightSettingForIncominCall(DialedNumber);
+                PropertyInfo property = type.GetProperty("PhoneLine");
+                IPhoneLine currentPhoneLine = (IPhoneLine)property.GetValue(e.Item, null);
+                //if (form.InvokeRequired)
+                //{
+                //    //var action = new Action(() => Softphone_IncomingCall(sender, e));
+                //    Barsa.Spl.Async.RunAfterTime(1, form, () => Softphone_IncomingCall(sender, e));
+                //    //form.BeginInvoke( action);
+                //    return;
+                //}
+                string DialedNumber = e.Item.DialInfo.Dialed;
+                if (callMain.CallState != CallState.InCall)
+                    callMain = e.Item;
+                ActualCall = callMain;
+                string CallerId = ((Ozeki.VoIP.LocalCallWrapper)e.Item).CallerIDAsCaller;
+                // Check if CallerId starts with "9"
+                CallerId = FixIncomingNumber(CallerId);
 
-            string userToken = form.userToken;
-            if (!string.IsNullOrEmpty(userToken))
-            {
-                string Token = userToken.ToString();
-                var payload = new
+                Logers($"recived callMain from {CallerId} for {currentPhoneLine.SIPAccount.RegisterName} Account", "MainForm");
+
+                form.getRightSettingForIncominCall(DialedNumber);
+
+                string userToken = form.userToken;
+                if (!string.IsNullOrEmpty(userToken))
                 {
-                    CallerId
-                };
-                CallerInfo = _apiHelper.MakeApiCall<List<CallerData>>(form.BarsaAddress, "GetCallerInfo", payload, Token).Result;
+                    string Token = userToken.ToString();
+                    var payload = new
+                    {
+                        CallerId
+                    };
+                    CallerInfo = _apiHelper.MakeApiCall<List<CallerData>>(form.BarsaAddress, "GetCallerInfo", payload, Token).Result;
 
-                //CallerInfo = await CallGetCallerInfoApi(userToken, CallerID);
+                    //CallerInfo = await CallGetCallerInfoApi(userToken, CallerID);
+                }
+
+                Barsa.Spl.Async.RunAfterTime(100, form, () =>
+                {
+                    incomingCallForm = new IncomingCallForm(CallerId, CallerInfo, this, form.userToken, e.Item.CallID, e.Item);
+                    incomingCallForms[e.Item.CallID] = incomingCallForm;
+
+                    ShowNotifyWindow(incomingCallForm);
+                    
+
+                });
+               
+                    callMain.CallStateChanged += Call_CallStateChanged;
+                
+
+                    if (form.IsTransferEnabled && form.CouplePhone != CallerId)
+                {
+                    callMain.Answer();
+                    StartOutgoingCalls(form.CouplePhone);
+                    Logers($"Transfer callMain to .. {form.CouplePhone} for {currentPhoneLine.SIPAccount.RegisterName} Account", "MainForm");
+                }
             }
-            incomingCallForm = new IncomingCallForm(CallerId, CallerInfo, this, form.userToken);
-            ShowNotifyWindow(incomingCallForm);
 
-            if (form.IsTransferEnabled && form.CouplePhone != CallerId)
+        }
+        public IPhoneCall CreateCall(string targetNumber)
+        {
+            var dialParams = new DialParameters(targetNumber);
+            dialParams.CallType = CallType.Audio;
+            if (phoneLine == null || phoneLine.RegState != RegState.RegistrationSucceeded)
+                MessageBox.Show($"First Register Your Sip Account", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            else
             {
-                call1.Answer();
-                StartOutgoingCalls(form.CouplePhone);
-                Log($"Transfer call to .. {form.CouplePhone} for {currentPhoneLine.SIPAccount.RegisterName} Account", "MainForm");
+                callMain = softPhone.CreateCallObject(phoneLine, dialParams);
+                callMain.CallStateChanged += Call_CallStateChanged;
+                ActualCall = callMain;
+                callMain.Start();
+                return callMain;
+            }
+            return null;
+        }
+
+        private void Call_CallStateChanged(object sender, CallStateChangedArgs e)
+        {
+            lock (form._sync)
+            {
+                Type type = sender.GetType();
+                PropertyInfo property = type.GetProperty("PhoneLine");
+                IPhoneLine currentPhoneLine = (IPhoneLine)property.GetValue(sender, null);
+                Console.WriteLine("Call state: {0}.", e.State);
+                Logers($"Call state: {e.State}. for {currentPhoneLine.SIPAccount.RegisterName} Account", "MainForm");
+                IPhoneCall CurrentCall = (IPhoneCall)sender;
+                SharedState.Instance.UpdateState(CurrentCall.CallID, e.State);
+
+                CheckStopRingback();
+                CheckStopRingtone();
+
+
+                if (e.State == CallState.Setup)
+                {
+                    InsertLogViaApi(CurrentCall);
+
+                }
+                else
+                {
+                    UpdateLogViaApi(CurrentCall, duration: callDurationSeconds, customerInfo: JsonConvert.SerializeObject(CallerInfo).ToString(), log: JsonConvert.SerializeObject(form.txtLog.Text).ToString());
+                }
+                if (e.State.IsRinging())
+                {
+                    if (callMain.IsIncoming)
+                        MediaHandlers.StartRingtone();
+                    else
+                        MediaHandlers.StartRingback();
+                    return;
+                }
+                if (e.State == CallState.Answered)
+                {
+                    _conferenceRoom.AddToConference(callMain);
+
+                    if (form.IsTransferEnabled && !CurrentCall.IsIncoming && form.CouplePhone != CurrentCall.DialInfo.CallerID)
+                    {
+                        StartOutgoingCalls(form.CouplePhone);
+                        Logers($"Transfer callMain to .. {form.CouplePhone} for {currentPhoneLine.SIPAccount.RegisterName} Account", "MainForm");
+
+                    }
+                    StartCallTimer();
+                    _conferenceRoom.CallConnected += ConfrenceConected;
+                    _conferenceRoom.CallDisconnected += ConfrenceDisconected;
+                    if (incomingCallForms.ContainsKey(CurrentCall.CallID))
+                    {
+                        incomingCallForm = incomingCallForms[CurrentCall.CallID];
+                        // Do something with the incomingCallForm...
+
+                        if (incomingCallForm != null && incomingCallForm.IsHandleCreated)
+                        {
+                            // Check if the form's handle has been created
+                            incomingCallForm.Invoke(new Action(() =>
+                            {
+                                incomingCallForm.btnAnswer.Enabled = false;
+                            }));
+                        }
+                    }
+
+
+                }
+                if (e.State.IsRemoteMediaCommunication())
+                {
+                    if (!form.IsTransferEnabled)
+                    {
+                        //SetupDevices();
+
+                        if (callMain.Equals(CurrentCall))
+                        {
+                            MediaHandlers.AttachAudio(CurrentCall);
+                            MediaHandlers.AttachVideo(CurrentCall);
+                        }
+                    }
+                    return;
+                }
+                if (e.State == CallState.LocalHeld || e.State == CallState.InactiveHeld || e.State.IsCallEnded())
+                {
+                    if (callMain != null && callMain.Equals(CurrentCall))
+                    {
+                        MediaHandlers.DetachAudio();
+                        MediaHandlers.DetachVideo();
+                    }
+                }
+                if (e.State == CallState.InCall)
+                {
+
+                }
+                if (e.State == CallState.LocalHeld)
+                {
+
+                }
+                if (e.State.IsCallEnded())
+                {
+                    if (CurrentCall.IsAnswered)
+                    {
+                        Logers($"callMain completed for {currentPhoneLine.SIPAccount.RegisterName} duration was : {callDurationSeconds}", "MainForm");
+                    }
+                    else
+                    {
+                        Logers($"callMain completed for {currentPhoneLine.SIPAccount.RegisterName}", "MainForm");
+                    }
+                    _conferenceRoom.CallConnected -= ConfrenceConected;
+                    _conferenceRoom.CallDisconnected -= ConfrenceDisconected;
+                    form.CallCompleted();
+                    if (incomingCallForms.ContainsKey(CurrentCall.CallID))
+                    {
+                        incomingCallForm = incomingCallForms[CurrentCall.CallID];
+                        if (incomingCallForm != null && incomingCallForm.IsHandleCreated)
+                        {
+                            // Check if the form's handle has been created
+                            incomingCallForm.Invoke(new Action(() =>
+                            {
+                                incomingCallForm.btnAnswer.Enabled = false;
+                                incomingCallForm.btnDrop.Enabled = false;
+                            }));
+                        }
+                    }
+                    DropCall(CurrentCall);
+                }
             }
         }
+
 
         public static void ShowNotifyWindow(Form form)
         {
@@ -205,21 +423,52 @@ namespace sipservice
         public void StartOutgoingCalls(string targetNumber)
         {
 
-            call2 = softphone.CreateCallObject(phoneLine, targetNumber);
-            ActualCall = call2;
-            call2.CallStateChanged += OutgoingCallStateChanged;
-            Log($"Ringing phone number {call1.DialInfo.Dialed} from {phoneLine.SIPAccount.RegisterName} Account ", "MainForm");
-            call2.Start();
+            callConfrance = softPhone.CreateCallObject(phoneLine, targetNumber);
+            ActualCall = callConfrance;
+            callConfrance.CallStateChanged += OutgoingCallStateChanged;
+            Logers($"Ringing phone number {callMain.DialInfo.Dialed} from {phoneLine.SIPAccount.RegisterName} Account ", "MainForm");
+            callConfrance.Start();
         }
         void OutgoingCallStateChanged(object sender, CallStateChangedArgs e)
         {
             var call = (ICall)sender;
-            Log($"out going Call state: {e.State}.", "MainForm");
+            Logers($"out going Call state: {e.State}.", "MainForm");
             if (e.State == CallState.Answered)
             {
                 //incomingCallForm.UpdateLabelText($"Second Device Answered And Added To Confrerence");
-                _conferenceRoom.AddToConference(call2);
-                Log($"{call.DialInfo.Dialed} added to confrance from {phoneLine.SIPAccount.RegisterName} Account ", "MainForm");
+                _conferenceRoom.AddToConference(callConfrance);
+                Logers($"{call.DialInfo.Dialed} added to confrance from {phoneLine.SIPAccount.RegisterName} Account ", "MainForm");
+            }
+            if (e.State == CallState.LocalHeld)
+            {
+                Console.WriteLine("CallState.LocalHeld");
+            }
+            if (e.State.IsCallEnded())
+            {
+                Console.WriteLine("couple phone hanged up");
+                call.HangUp();
+            }
+        }
+        public void StartTransferCalls(string targetNumber)
+        {
+
+            callTransfer = softPhone.CreateCallObject(phoneLine, targetNumber);
+            ActualCall = callTransfer;
+            callTransfer.CallStateChanged += TransferCallStateChanged;
+            Logers($"Ringing phone number {callMain.DialInfo.Dialed} from {phoneLine.SIPAccount.RegisterName} Account ", "MainForm");
+            callTransfer.Start();
+        }
+        void TransferCallStateChanged(object sender, CallStateChangedArgs e)
+        {
+            var call = (ICall)sender;
+            Logers($"out going Call state: {e.State}.", "MainForm");
+            if (e.State == CallState.Answered)
+            {
+                callMain.AttendedTransfer(call);
+
+
+
+                Logers($"{callMain.DialInfo.Dialed} Transfered For {phoneLine.SIPAccount.RegisterName} Account  to {call.CallID}", "MainForm");
             }
             if (e.State == CallState.LocalHeld)
             {
@@ -233,92 +482,80 @@ namespace sipservice
         }
         private void ConfrenceDisconected(object sender, VoIPEventArgs<ICall> e)
         {
-            Log($"confence disconnected from {((Ozeki.VoIP.LocalCallWrapper)e.Item).CallerIDAsCaller} for {phoneLine.SIPAccount.RegisterName} Account ", "MainForm");
-            RejectCall();
+            Logers($"confence disconnected from {((Ozeki.VoIP.LocalCallWrapper)e.Item).CallerIDAsCaller} for {phoneLine.SIPAccount.RegisterName} Account ", "MainForm");
+            RejectCall(ActualCall);
         }
         private void ConfrenceConected(object sender, VoIPEventArgs<ICall> e)
         {
-            Log($"confence connected from {((Ozeki.VoIP.LocalCallWrapper)e.Item).CallerIDAsCaller} for {phoneLine.SIPAccount.RegisterName} Account", "MainForm");
+            Logers($"confence connected from {((Ozeki.VoIP.LocalCallWrapper)e.Item).CallerIDAsCaller} for {phoneLine.SIPAccount.RegisterName} Account", "MainForm");
         }
-        public void CreateCall(string targetNumber)
+        //public IPhoneCall CreateCall(string targetNumber)
+        //{
+        //    var dialParams = new DialParameters(targetNumber);
+        //    dialParams.CallType = CallType.Audio;
+        //    if (phoneLine == null || phoneLine.RegState != RegState.RegistrationSucceeded)
+        //        MessageBox.Show($"First Register Your Sip Account", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    else
+        //    {
+        //        callMain = softPhone.CreateCallObject(phoneLine, dialParams);
+        //        callMain.CallStateChanged += Call_CallStateChanged;
+        //        ActualCall = callMain;
+        //        callMain.Start();
+        //        return callMain;
+        //    }
+        //    return null;
+        //}
+
+        private void UpdateLogViaApi(IPhoneCall currentCall,
+                                     string date = default,
+                                     int duration = default,
+                                     string customerInfo = default,
+                                     string log = default
+                                     )
         {
-            var dialParams = new DialParameters(targetNumber);
-            dialParams.CallType = CallType.Audio;
-            if (phoneLine == null || phoneLine.RegState != RegState.RegistrationSucceeded)
-                MessageBox.Show($"First Register Your Sip Account", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            else
+            string Token = form.userToken;
+            var payload = new
             {
+                internalNumber = currentCall.DialInfo.CallerID,
+                callerNumber = currentCall.DialInfo.Dialed,
+                callType = currentCall.IsIncoming ? 0 : 1, // Convert boolean to integer,
+                callResult = currentCall.IsAnswered ? 1 : 0,
+                date = date ?? DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                duration,
+                customerInfo,
+                log,
+                callId = currentCall.CallID,
+                status = currentCall.CallState.ToString(),
 
-
-                call1 = softphone.CreateCallObject(phoneLine, dialParams);
-                call1.CallStateChanged += Call_CallStateChanged;
-                ActualCall = call1;
-                call1.Start();
-            }
+            };
+            var insertLogApiResponse = _apiHelper.MakeApiCall<InsertLogApiResponse>(form.BarsaAddress, "UpdateLog", payload, Token).Result;
         }
-        private void Call_CallStateChanged(object sender, CallStateChangedArgs e)
+
+        private void InsertLogViaApi(IPhoneCall currentCall)
         {
-            Type type = sender.GetType();
-            PropertyInfo property = type.GetProperty("PhoneLine");
-            IPhoneLine currentPhoneLine = (IPhoneLine)property.GetValue(sender, null);
-            Console.WriteLine("Call state: {0}.", e.State);
-            Log($"Call state: {e.State}. for {currentPhoneLine.SIPAccount.RegisterName} Account", "MainForm");
-            IPhoneCall CurrentCall = (IPhoneCall)sender;
-            if (e.State == CallState.Answered)
+            string Token = form.userToken;
+            var endTime = DateTime.Now; // Assuming the call ends when making the API call
+            var payload = new
             {
-                _conferenceRoom.AddToConference(call1);
-                if (!form.IsTransferEnabled)
-                    SetupDevices();
-                else if (form.IsTransferEnabled && !CurrentCall.IsIncoming && form.CouplePhone != CurrentCall.DialInfo.CallerID)
-                {
-                    StartOutgoingCalls(form.CouplePhone);
-                    Log($"Transfer call to .. {form.CouplePhone} for {currentPhoneLine.SIPAccount.RegisterName} Account", "MainForm");
-
-                }
-                StartCallTimer();
-                _conferenceRoom.CallConnected += ConfrenceConected;
-                _conferenceRoom.CallDisconnected += ConfrenceDisconected;
-                if (incomingCallForm != null && incomingCallForm.IsHandleCreated)
-                {
-                    // Check if the form's handle has been created
-                    incomingCallForm.Invoke(new Action(() =>
-                    {
-                        incomingCallForm.btnAnswer.Enabled = false;
-                    }));
-                }
-
-            }
-            if (e.State == CallState.InCall)
-            {
-
-            }
-            if (e.State == CallState.LocalHeld)
-            {
-
-            }
-            if (e.State.IsCallEnded())
-            {
-                Log($"call completed for {currentPhoneLine.SIPAccount.RegisterName} duration was : {callDurationSeconds}", "MainForm");
-                _conferenceRoom.CallConnected -= ConfrenceConected;
-                _conferenceRoom.CallDisconnected -= ConfrenceDisconected;
-                form.CallCompleted();
-                if (incomingCallForm != null && incomingCallForm.IsHandleCreated)
-                {
-                    // Check if the form's handle has been created
-                    incomingCallForm.Invoke(new Action(() =>
-                    {
-                        incomingCallForm.btnAnswer.Enabled = false;
-                        incomingCallForm.btnDrop.Enabled = false;
-                    }));
-                }
-                DropCall();
-            }
+                internalNumber = currentCall.DialInfo.CallerID,
+                callerNumber = currentCall.DialInfo.Dialed,
+                callType = currentCall.IsIncoming ? 0 : 1, // Convert boolean to integer,
+                callResult = currentCall.IsAnswered ? 0 : 1,
+                date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                duration = 0, // Convert duration to total seconds
+                customerInfo = JsonConvert.SerializeObject(CallerInfo).ToString(),
+                log = JsonConvert.SerializeObject(form.txtLog.Text).ToString(),
+                callId = currentCall.CallID,
+                status = currentCall.CallState.ToString(),
+            };
+            var insertLogApiResponse = _apiHelper.MakeApiCall<InsertLogApiResponse>(form.BarsaAddress, "InsertLog", payload, Token).Result;
         }
+
         void DisposeCall(IPhoneCall call)
         {
             if (call != null)
                 call.CallStateChanged -= (Call_CallStateChanged);
-            StopCallTimer();
+            //StopCallTimer();
         }
         private void SetupDevices()
         {
@@ -330,8 +567,8 @@ namespace sipservice
                 _conferenceRoom.ConnectSender(microphone);
                 //connector.Connect(microphone, mediaSender);
                 //connector.Connect(mediaReceiver, speaker);
-                mediaSender.AttachToCall(call1);
-                mediaReceiver.AttachToCall(call1);
+                mediaSender.AttachToCall(callMain);
+                mediaReceiver.AttachToCall(callMain);
                 microphone?.Start();
                 speaker?.Start();
             }
@@ -341,52 +578,83 @@ namespace sipservice
             }
 
         }
-        private void Log(string message, string FormType)
+        private void CheckStopRingback()
+        {
+            bool stopRinging = true;
+            if (!callMain.IsIncoming && callMain.CallState.IsRinging())
+            {
+                stopRinging = false;
+            }
+            if (stopRinging)
+                MediaHandlers.StopRingback();
+
+        }
+
+        private void CheckStopRingtone()
+        {
+            bool stopRinging = true;
+            if (callMain.IsIncoming && callMain.CallState.IsRinging())
+            {
+                stopRinging = false;
+            }
+            if (stopRinging)
+                MediaHandlers.StopRingtone();
+        }
+
+        private void Logers(string message, string FormType)
         {
             if (FormType == "MainForm")
             {
                 form.UpdateLog(message);
             }
-            if (FormType == "IncomingCallForm")//&& incomingCallForm?.ctlCallInfoList?.txtLog != null)
+            if ((ActualCall != null))
             {
-                incomingCallForm.UpdateLabelText(message);
-            }
-            if (FormType == "OutGoingCallForm")// && outgoingCallForm?.ctlCallInfoList?.txtLog != null)
-            {
-                incomingCallForm.UpdateLabelText(message);
-            }
-        }
-        internal void AnswerCall()
-        {
-            call1.Answer();
-        }
-        internal void RejectCall()
-        {
-            if (call1 != null)
-            {
-                call1.HangUp();
-                DisposeCall(call2);
-            }
-            StopCallTimer();
-            if (call2 != null)
-            {
-                call2.HangUp();
-                DisposeCall(call2);
+                if (incomingCallForms.ContainsKey(ActualCall.CallID))
+                {
+                    incomingCallForm = incomingCallForms[ActualCall.CallID];
+                    if (FormType == "IncomingCallForm")//&& incomingCallForm?.ctlCallInfoList?.txtLog != null)
+                    {
+
+                        incomingCallForm.UpdateLabelText(message);
+                    }
+                    if (FormType == "OutGoingCallForm")// && outgoingCallForm?.ctlCallInfoList?.txtLog != null)
+                    {
+                        incomingCallForm.UpdateLabelText(message);
+                    }
+                }
             }
         }
-        internal void DropCall()
+        internal void AnswerCall(IPhoneCall call)
         {
-            if (call1 != null)
+            call.Answer();
+        }
+
+        internal void RejectCall(IPhoneCall call)
+        {
+            if (call != null)
             {
-                call1.HangUp();
-                DisposeCall(call2);
+                call.HangUp();
+                DisposeCall(call);
+                if (call.IsAnswered)
+                    StopCallTimer();
             }
-            StopCallTimer();
-            if (call2 != null)
+            //if (callConfrance != null)
+            //{
+            //    callConfrance.HangUp();
+            //    DisposeCall(callConfrance);
+            //}
+        }
+        internal void DropCall(IPhoneCall call)
+        {
+            if (call != null)
             {
-                call2.HangUp();
-                DisposeCall(call2);
+                call.HangUp();
+                DisposeCall(call);
+                if (call.IsAnswered)
+                    StopCallTimer();
             }
+
+
         }
         public void StartCallTimer()
         {
@@ -497,7 +765,7 @@ namespace sipservice
                 return null;
             }
         }
-        internal async Task<TokenResponse> GetToken(string barsaUserName, string barsaPassword, string barsaAdderess)
+        internal TokenResponse GetToken(string barsaUserName, string barsaPassword, string barsaAdderess)
         {
             string apiUrl = $"{barsaAdderess}/api2/incomingCall/0.1/";
             string method = "GetToken";
@@ -529,7 +797,7 @@ namespace sipservice
             }
             return null;
         }
-        
+
         internal async Task<CallerData> CallGetCallerInfoApi(string userToken, string CallerID)
         {
             string apiUrl = $"http://{form.BarsaAddress}/api2/incomingCall/0.1/";
@@ -578,7 +846,7 @@ namespace sipservice
                 }
                 catch (Exception ex)
                 {
-                    HandleException("Exception during CallGetCallerInfoApi API call: " + ex.Message);
+                    HandleException("Exception during CallGetCallerInfoApi API callMain: " + ex.Message);
                 }
             }
             return null;
@@ -621,7 +889,7 @@ namespace sipservice
             //    }
             //    catch (Exception ex)
             //    {
-            //        HandleException("Exception during CallGetCallerInfoApi API call: " + ex.Message);
+            //        HandleException("Exception during CallGetCallerInfoApi API callMain: " + ex.Message);
             //    }
             //}
             //return null;
@@ -669,7 +937,7 @@ namespace sipservice
                 }
                 catch (Exception ex)
                 {
-                    HandleException("Exception during API call: " + ex.Message);
+                    HandleException("Exception during API callMain: " + ex.Message);
                 }
             }
             return null;
@@ -779,6 +1047,12 @@ namespace sipservice
                 HandleApiError("Login API Error:");
             }
         }
+
+        internal void TransferCall(string numberToTransfer)
+        {
+
+            StartTransferCalls(numberToTransfer);
+        }
     }
     public class TokenResponse
     {
@@ -793,6 +1067,10 @@ namespace sipservice
     public class RedirectApiResponse
     {
         public bool Output { get; set; }
+    }
+    public class InsertLogApiResponse
+    {
+        public long Result { get; set; }
     }
 }
 

@@ -8,11 +8,12 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>SIPWindowsAgent</RootNamespace>
     <AssemblyName>SIPWindowsAgent</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -23,10 +24,10 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationRevision>1</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -54,9 +55,25 @@
   <PropertyGroup>
     <ApplicationIcon>Phone_43546.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>7AAEFC9BF9672797E58C4BE4046F9B3EAFBAD9EB</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>SIPWindowsAgent_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Barsa.Dynamics.WebService">
       <HintPath>D:\Barsa\4.1.72\WebIII\_Temporary\Dynamics\Barsa.Dynamics.WebService.dll</HintPath>
+    </Reference>
+    <Reference Include="Barsa.Spl, Version=4.1.75.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\Barsa.Spl.dll</HintPath>
     </Reference>
     <Reference Include="Nancy, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Nancy.2.0.0\lib\net452\Nancy.dll</HintPath>
@@ -103,6 +120,15 @@
     </Compile>
     <Compile Include="CallInfoControl.Designer.cs">
       <DependentUpon>CallInfoControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GetCurrentDevices.cs" />
+    <Compile Include="MediaHandlers.cs" />
+    <Compile Include="SharedState.cs" />
+    <Compile Include="TransferCallForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TransferCallForm.Designer.cs">
+      <DependentUpon>TransferCallForm.cs</DependentUpon>
     </Compile>
     <Compile Include="RedirectApiService.cs" />
     <Compile Include="OutgoingCallForm.cs">
@@ -158,6 +184,9 @@
     <EmbeddedResource Include="CallInfoControl.resx">
       <DependentUpon>CallInfoControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="TransferCallForm.resx">
+      <DependentUpon>TransferCallForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -191,6 +220,8 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Resources\license.rtf" />
+    <None Include="SIPWindowsAgent_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -219,6 +250,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Phone_43546.ico" />
+    <EmbeddedResource Include="Resources\basic_ring.wav" />
+    <Content Include="Resources\ozeki_voip_sip_sdk_pic2.png" />
+    <EmbeddedResource Include="Resources\ringback.wav" />
+    <Content Include="Resources\sdk_icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

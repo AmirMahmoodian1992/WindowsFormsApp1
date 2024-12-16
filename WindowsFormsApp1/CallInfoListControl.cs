@@ -19,7 +19,7 @@ namespace SIPWindowsAgent
         public string UserToken { get; private set; }
         public SIPService SipService { get; private set; }
 
-        public void ShowData(List<CallerData> data, string callerNumber, bool isInput, string userToken, OpenMethodDelegate openMethod, SIPService sipService)
+        public void ShowData(List<CallerData> data, string callerNumber, bool isInput, string userToken, OpenMethodDelegate openMethod, SIPService sipService, Ozeki.VoIP.IPhoneCall call)
         {
             if (data == null)
             {
@@ -33,9 +33,9 @@ namespace SIPWindowsAgent
 
             string text = "";
             if (isInput)
-                text = "تماس ورودی ...";
+                text = "تماس ورودی " + " برای  " + call.PhoneLine.SIPAccount.UserName;
             else
-                text = "تماس خروجی ...";
+                text = "تماس خروجی ";
             lblInfo.Text = text;
             txtCallerNumber.Text = callerNumber;
             foreach(var item in  data)
@@ -159,20 +159,20 @@ namespace SIPWindowsAgent
 
         private void lblInfo_MouseClick(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Middle)
-            {
-                if ((ParentForm is IncomingCallForm ic))
-                {
-                    var x = new IncomingCallForm(this.CallerNumber, this.Data, this.SipService, this.UserToken);
-                    x.Show();
-                }
-                else if ((ParentForm is OutgoingCallForm oc))
-                {
-                    var x = new OutgoingCallForm(this.CallerNumber, this.Data, this.SipService, this.UserToken);
-                    x.Show();
-                }
-                this.ParentForm.Close();
-            }
+            //if (e.Button == MouseButtons.Middle)
+            //{
+            //    if ((ParentForm is IncomingCallForm ic))
+            //    {
+            //        var x = new IncomingCallForm(this.CallerNumber, this.Data, this.SipService, this.UserToken);
+            //        x.Show();
+            //    }
+            //    else if ((ParentForm is OutgoingCallForm oc))
+            //    {
+            //        var x = new OutgoingCallForm(this.CallerNumber, this.Data, this.SipService, this.UserToken);
+            //        x.Show();
+            //    }
+            //    this.ParentForm.Close();
+            //}
         }
     }
 }

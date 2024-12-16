@@ -47,9 +47,9 @@ namespace SIPWindowsAgent
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.generalSettingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBoxFormClosingInterval = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.textBoxFormClosingInterval = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.generalSettingsGroupBox.SuspendLayout();
@@ -153,6 +153,7 @@ namespace SIPWindowsAgent
             this.BarsaAddressTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.BarsaAddressTextBox.Size = new System.Drawing.Size(169, 21);
             this.BarsaAddressTextBox.TabIndex = 35;
+            this.BarsaAddressTextBox.Text = "https://my.barsasoft.com/";
             this.BarsaAddressTextBox.TextChanged += new System.EventHandler(this.BarsaAddressTextBox_TextChanged);
             this.BarsaAddressTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.BarsaAddressTextBox_Validating);
             // 
@@ -223,14 +224,14 @@ namespace SIPWindowsAgent
             this.generalSettingsGroupBox.TabStop = false;
             this.generalSettingsGroupBox.Text = "تنظیمات عمومی";
             // 
-            // label1
+            // label2
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(220, 38);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(146, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "بسته شدن پنجره تماس بعد از ";
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(116, 38);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(30, 13);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "ثانیه.";
             // 
             // textBoxFormClosingInterval
             // 
@@ -240,14 +241,14 @@ namespace SIPWindowsAgent
             this.textBoxFormClosingInterval.TabIndex = 1;
             this.textBoxFormClosingInterval.Text = "30";
             // 
-            // label2
+            // label1
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(116, 38);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(30, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "ثانیه.";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(220, 38);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(146, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "بسته شدن پنجره تماس بعد از ";
             // 
             // SettingsForm
             // 

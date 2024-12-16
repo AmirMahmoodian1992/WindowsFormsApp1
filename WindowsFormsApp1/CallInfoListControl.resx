@@ -154,7 +154,7 @@
     <value>3, 4</value>
   </data>
   <data name="txtCallerNumber.Size" type="System.Drawing.Size, System.Drawing">
-    <value>126, 20</value>
+    <value>152, 20</value>
   </data>
   <data name="txtCallerNumber.TabIndex" type="System.Int32, mscorlib">
     <value>29</value>
@@ -181,10 +181,10 @@
     <value>NoControl</value>
   </data>
   <data name="lblInfo.Location" type="System.Drawing.Point, System.Drawing">
-    <value>144, 4</value>
+    <value>175, 4</value>
   </data>
   <data name="lblInfo.Size" type="System.Drawing.Size, System.Drawing">
-    <value>257, 20</value>
+    <value>226, 20</value>
   </data>
   <data name="lblInfo.TabIndex" type="System.Int32, mscorlib">
     <value>29</value>

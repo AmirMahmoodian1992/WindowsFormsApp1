@@ -34,6 +34,9 @@ namespace SIPWindowsAgent
         string DomainHost;
         private bool NewFlag = true;
         internal ApiServiceHelper apiServiceHelper;
+        private bool isWindowOpen = false;
+        GetUsernameAndPassword PassForm;
+
 
         public SettingsForm(SIPService sipService, MainForm frm, bool newFlag, ApiServiceHelper apiServiceHelper)
         {
@@ -82,12 +85,13 @@ namespace SIPWindowsAgent
                 MessageBox.Show("Please Enter Time Interval In Right Format.");
             }
             var userToken = UserTokenTextBox.Text;
-            if (userToken != null)
+            appConfig.UserToken = userToken;
+            frm.userToken = userToken;
+            appConfig.BarsaUserName = BarcaUsername.Text;
+            if (!string.IsNullOrEmpty(userToken))
             {
                 List<SipSettings> sipSettingsList = apiServiceHelper.MakeApiCall<List<SipSettings>>(BarsaAddressTextBox.Text, "GetSipSettings", null, userToken).Result;
-                appConfig.UserToken = userToken;
-                frm.userToken = userToken;
-                appConfig.BarsaUserName = BarcaUsername.Text;
+                
                 if (sipSettingsList != null)
                 {
                     foreach (var sipSettingsItems in sipSettingsList)
@@ -109,6 +113,8 @@ namespace SIPWindowsAgent
                 {
                     appConfig.SipSettings[username] = new SipSettings();
                 }
+                sipService.InitSoftphone();
+                sipService.Dispose();
                 SettingsManager.Instance.SaveSettings(appConfig);
                 foreach (var kvp in appConfig.SipSettings)
                 {
@@ -132,6 +138,10 @@ namespace SIPWindowsAgent
                 }
                 frm.LoadingSipAccountsInListBox();
             }
+            else
+            {
+                SettingsManager.Instance.SaveSettings(appConfig);
+            }
             Close();
         }
 
@@ -143,11 +153,14 @@ namespace SIPWindowsAgent
                 AppConfig config = SettingsManager.Instance.LoadSettings();
                 TransferphoneCheckBox.Checked = config.IsTransferEnabled;
                 CouplePhoneTextBox.Text = config.CouplePhone;
-                BarsaAddressTextBox.Text = config.BarsaAddress;
+                BarsaAddressTextBox.Text = string.IsNullOrEmpty(config.BarsaAddress) ? "https://my.barsasoft.com/" : config.BarsaAddress;
+
                 BarcaUsername.Text = config.BarsaUserName;
                 UserTokenTextBox.Text = config.UserToken;
                 textBoxFormClosingInterval.Text = config.CloseFormInterval.ToString();
             }
+
+
             if (TransferphoneCheckBox.Checked)
             {
                 CouplePhoneTextBox.Enabled = true;
@@ -198,8 +211,19 @@ namespace SIPWindowsAgent
 
         private void button1_Click(object sender, EventArgs e)
         {
-            GetUsernameAndPassword PassForm = new GetUsernameAndPassword(this.sipService, this, this.apiServiceHelper);
-            PassForm.Show();
+            if (!isWindowOpen)
+            {
+                // Create a new instance of Form2 if it's not already open
+                PassForm = new GetUsernameAndPassword(this.sipService, this, this.apiServiceHelper);
+                PassForm.FormClosed += (s, args) => isWindowOpen = false; // Update flag when Form2 is closed
+                PassForm.Show();
+                isWindowOpen = true;
+            }
+            else
+            {
+                // Bring the existing instance of Form2 to the front
+                PassForm?.BringToFront();
+            }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
